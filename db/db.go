@@ -8,9 +8,10 @@ import (
 )
 
 type Mongodb struct {
-	RecordsColl *mongo.Collection
-	GoodsColl   *mongo.Collection
-	ManagerColl *mongo.Collection
+	HRecordsColl *mongo.Collection
+	DRecordsColl *mongo.Collection
+	GoodsColl    *mongo.Collection
+	EmpColl      *mongo.Collection
 }
 
 var (
@@ -24,9 +25,9 @@ func Init() {
 		logrus.Fatal("failed to connect MongoDB & ", err.Error())
 	}
 	MongoDB.GoodsColl = MongoClient.Collection("goods")
-	MongoDB.ManagerColl = MongoClient.Collection("employee")
-	MongoDB.RecordsColl = MongoClient.Collection("records_hang")
-	MongoDB.RecordsColl = MongoClient.Collection("records_done")
+	MongoDB.EmpColl = MongoClient.Collection("employee")
+	MongoDB.HRecordsColl = MongoClient.Collection("records_hang")
+	MongoDB.DRecordsColl = MongoClient.Collection("records_done")
 
 	logrus.Info("all databases connected")
 }
