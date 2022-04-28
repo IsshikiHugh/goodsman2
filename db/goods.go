@@ -7,8 +7,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"goodsman2.0/model"
+	"goodsman2.0/utils"
 )
 
+//通过ID搜索good
 func QueryGoodsByID(goodID string) (good model.Goods, err error) {
 	ctx := context.TODO()
 	filter := bson.D{{"good_id", goodID}}
@@ -20,14 +22,15 @@ func QueryGoodsByID(goodID string) (good model.Goods, err error) {
 	return
 }
 
-func QueryAllGoodsByName(name string) (goods []model.Goods, err error) {
+//可选输入name，模糊搜索
+func QueryAllGoodsByName(name ...string) (goods []model.Goods, err error) {
 	ctx := context.TODO()
 	filter := bson.M{}
-	if name != "" {
+	if len(name) != 0 {
 		filter = bson.M{
 			"name": bson.M{
 				"$regex": primitive.Regex{
-					Pattern: "*" + name + "*",
+					Pattern: "*" + name[0] + "*",
 					Options: "i"}}}
 	}
 
@@ -88,4 +91,9 @@ func UpdateGoodsState(goods model.Goods) (err error) {
 		return
 	}
 	return
+}
+
+func CreateNewGoods(good model.Good) (goodID string, err error) {
+	goodID, _ = utils.GenerateUID()
+	newGood := 
 }
