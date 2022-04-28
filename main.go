@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"time"
 
+	"goodsman2.0/handlers"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -29,7 +31,7 @@ func main() {
 	// db.Init()
 	// feishu.Init()
 
-	r := initRouter()
+	r := handlers.InitRouter()
 	s := &http.Server{
 		Addr:           fmt.Sprintf(":%d", config.Base.HttpPort),
 		Handler:        r,
