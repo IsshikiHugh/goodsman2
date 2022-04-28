@@ -1,2 +1,4 @@
 # goodsman2.0
-the 2.0 version of the goodsman system
+
+> 2.0版本的goodsman
+
