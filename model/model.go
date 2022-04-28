@@ -1,32 +1,32 @@
 package model
 
-type Good struct {
-	Id    string
-	Name  string
-	Lore  string
-	Msg   string
-	Num   int
-	Price float64
-	Auth  int
-	Image string
+type Goods struct {
+	Id    string  `json:"id"`
+	Name  string  `json:"name"`
+	Lore  string  `json:"lore"`
+	Msg   string  `json:"msg"`
+	Num   int     `json:"num"`
+	Price float64 `json:"price"`
+	Auth  int     `json:"auth"`
+	Image string  `json:"image"`
 }
 
 type Employee struct {
-	Id    string
-	Name  string
-	Auth  int
-	Money float64
+	Id    string  `json:"id"`
+	Name  string  `json:"name"`
+	Auth  int     `json:"auth"`
+	Money float64 `json:"money"`
 }
 
 type Record_H struct {
-	Id   string
-	Eid  string
-	Gid  string
-	Num  int
-	Date string //TODO:
+	Id   string `json:"id"`
+	Eid  string `json:"eid"`
+	Gid  string `json:"gid"`
+	Num  int    `json:"num"`
+	Date string `json:"date"` //TODO:
 }
 
 type Record_D struct {
 	*Record_H
-	Origin string
+	Origin string `json:"origin"`
 }

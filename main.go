@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"time"
 
+	"goodsman2.0/config"
+	"goodsman2.0/db"
 	"goodsman2.0/handlers"
 
 	"github.com/sirupsen/logrus"
@@ -27,9 +29,9 @@ func main() {
 
 	logrus.SetReportCaller(true)
 	logrus.SetFormatter(&LogFormatter{})
-	// config.InitConfig()
-	// db.Init()
-	// feishu.Init()
+	config.InitConfig()
+	db.Init()
+	feishu.Init()
 
 	r := handlers.InitRouter()
 	s := &http.Server{

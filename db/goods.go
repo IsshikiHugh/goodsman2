@@ -9,7 +9,7 @@ import (
 	"goodsman2.0/model"
 )
 
-func QueryGoodsByID(goodID string) (good model.Good, err error) {
+func QueryGoodsByID(goodID string) (good model.Goods, err error) {
 	ctx := context.TODO()
 	filter := bson.D{{"good_id", goodID}}
 	err = MongoDB.GoodsColl.FindOne(ctx, filter).Decode(&good)
@@ -20,7 +20,7 @@ func QueryGoodsByID(goodID string) (good model.Good, err error) {
 	return
 }
 
-func QueryAllGoodsByName(name string) (goods []model.Good, err error) {
+func QueryAllGoodsByName(name string) (goods []model.Goods, err error) {
 	ctx := context.TODO()
 	filter := bson.M{}
 	if name != "" {
@@ -44,31 +44,40 @@ func QueryAllGoodsByName(name string) (goods []model.Good, err error) {
 	return
 }
 
-//Num 和 Price 字段可能为0，若不修改请设置为负值
-func UpdateGoodsState(good model.Good) (err error) {
+func NewGoodsStateFormat(gid string) model.Goods {
+	var goods model.Goods
+	goods.Id = gid
+	goods.Auth = -1
+	goods.Num = -1
+	goods.Price = -1
+	return goods
+}
+
+// Num 和 Price 字段可能为0，若不修改请设置为负值
+func UpdateGoodsState(goods model.Goods) (err error) {
 	ctx := context.TODO()
-	filter := bson.D{{"good_id", good.Id}}
+	filter := bson.D{{"good_id", goods.Id}}
 	update := bson.D{}
-	if good.Name != "" {
-		update = append(update, bson.E{"name", good.Name})
+	if goods.Name != "" {
+		update = append(update, bson.E{"name", goods.Name})
 	}
-	if good.Lore != "" {
-		update = append(update, bson.E{"lore", good.Lore})
+	if goods.Lore != "" {
+		update = append(update, bson.E{"lore", goods.Lore})
 	}
-	if good.Msg != "" {
-		update = append(update, bson.E{"msg", good.Msg})
+	if goods.Msg != "" {
+		update = append(update, bson.E{"msg", goods.Msg})
 	}
-	if good.Num >= 0 {
-		update = append(update, bson.E{"num", good.Num})
+	if goods.Num >= 0 {
+		update = append(update, bson.E{"num", goods.Num})
 	}
-	if good.Price >= 0 {
-		update = append(update, bson.E{"price", good.Price})
+	if goods.Price >= 0 {
+		update = append(update, bson.E{"price", goods.Price})
 	}
-	if good.Auth != 0 {
-		update = append(update, bson.E{"auth", good.Auth})
+	if goods.Auth != 0 {
+		update = append(update, bson.E{"auth", goods.Auth})
 	}
-	if good.Image != "" {
-		update = append(update, bson.E{"image", good.Image})
+	if goods.Image != "" {
+		update = append(update, bson.E{"image", goods.Image})
 	}
 	update = bson.D{{"$set", update}}
 
