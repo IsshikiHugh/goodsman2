@@ -30,7 +30,7 @@ type FSUser struct {
 	Data struct {
 		User struct {
 			Name string `json:"name"`
-			Eid  int    `json:"user_id"`
+			Eid  string `json:"user_id"`
 		} `json:"user"`
 	} `json:"data"`
 }

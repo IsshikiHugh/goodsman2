@@ -37,9 +37,9 @@ func EmployeeLogin(c *gin.Context) {
 		return
 	}
 
-	_, err = QueryEmployeeByID(employee.Data.Eid)
+	_, err = QueryEmployeeByID(employee.Data.User.Eid)
 	if err == nil {
-		newEmployeeState := NewEmployeeStateFormat(employee.Data.Eid)
+		newEmployeeState := NewEmployeeStateFormat(employee.Data.User.Eid)
 		err = UpdateEmployeeState(newEmployeeState)
 		if err != nil {
 			logrus.Error("DB_ERROR: error happen when update employee")
@@ -52,8 +52,8 @@ func EmployeeLogin(c *gin.Context) {
 	} else {
 		defaultMoney, _ := getDefaultMoney(AuthEmplo)
 		newEmployee := model.Employee{
-			Id:    employee.Data.Eid,
-			Name:  employee.Data.Name,
+			Id:    employee.Data.User.Eid,
+			Name:  employee.Data.User.Name,
 			Auth:  AuthEmplo,
 			Money: defaultMoney,
 		}
@@ -68,7 +68,7 @@ func EmployeeLogin(c *gin.Context) {
 		}
 		logrus.Info("create new employee: ", newEmployee.Name)
 	}
-	resp, _ := QueryEmployeeByID(employee.Data.Eid)
+	resp, _ := QueryEmployeeByID(employee.Data.User.Eid)
 
 	logrus.Info("OK")
 	c.JSON(http.StatusBadRequest, gin.H{
