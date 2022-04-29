@@ -22,7 +22,7 @@ func NewGoodsStateFormat(gid string) (goods *model.Goods) {
 //Query goods by Gid
 func QueryGoodsByID(goodID string) (good *model.Goods, err error) {
 	ctx := context.TODO()
-	filter := bson.D{{"good_id", goodID}}
+	filter := bson.D{{"_id", goodID}}
 	err = MongoDB.GoodsColl.FindOne(ctx, filter).Decode(&good)
 	if err != nil {
 		logrus.Error(err.Error())
@@ -69,7 +69,7 @@ func QueryAllGoodsByName(name ...string) (goods []*model.Goods, err error) {
 //goods.Id needed
 func UpdateGoodsState(goods *model.Goods) (err error) {
 	ctx := context.TODO()
-	filter := bson.D{{"good_id", goods.Id}}
+	filter := bson.D{{"_id", goods.Id}}
 	update := bson.D{}
 	if goods.Name != "" {
 		update = append(update, bson.E{"name", goods.Name})

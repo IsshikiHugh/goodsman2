@@ -38,7 +38,7 @@ func UpdateRecordsH(record *model.Record_H) (err error) {
 	ctx := context.TODO()
 	filter := bson.M{
 		"$or": bson.A{
-			bson.D{{"id", record.Id}},
+			bson.D{{"_id", record.Id}},
 			bson.D{{"gid", record.Gid}, {"eid", record.Eid}}}}
 
 	update := bson.D{}
@@ -64,7 +64,7 @@ func UpdateRecordsH(record *model.Record_H) (err error) {
 
 func DeleteRecordsHByRid(Rid string) (err error) {
 	ctx := context.TODO()
-	filter := bson.D{{"id", Rid}}
+	filter := bson.D{{"_id", Rid}}
 
 	_, err = MongoDB.HRecordsColl.DeleteOne(ctx, filter)
 	if err != nil {
