@@ -10,6 +10,7 @@ func InitRouter() *gin.Engine {
 	apiGroup := r.Group("/api")
 	{
 		apiGroup.GET("/users/info", GetEmployeeInfo)
+		apiGroup.GET("/users/search", GetCertainEmployeeList)
 		apiGroup.POST("/users/return_goods", ReturnGoods)
 
 		apiGroup.GET("/goods/msg", GetGoodsInfo)

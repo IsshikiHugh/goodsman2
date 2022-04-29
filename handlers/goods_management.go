@@ -237,6 +237,8 @@ func ReturnGoods(c *gin.Context) {
 	return
 }
 
+// Be used to get goods brief info list with certain sub string in name.
+// Simply avoid pass "sub_str" to get the whole list.
 func GetCertainGoodsBriefInfoList(c *gin.Context) {
 	subStr := c.DefaultQuery("sub_str", "")
 	if subStr == "" {

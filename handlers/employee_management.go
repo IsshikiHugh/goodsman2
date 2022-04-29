@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	. "goodsman2.0/db"
+	"goodsman2.0/model"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -35,6 +36,40 @@ func GetEmployeeInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"err":      "NULL",
 		"employee": employee,
+	})
+	return
+}
+
+// Be used to get employee list with certain sub string in name.
+// Simply avoid pass "sub_str" to get the whole list.
+func GetCertainEmployeeList(c *gin.Context) {
+	subStr := c.DefaultQuery("sub_str", "")
+	if subStr == "" {
+		logrus.Warn("sub string is empty !!!")
+		logrus.Warn("↑(ignore it if you want to get all the employees)")
+	}
+	employeeList, err := QueryAllEmployeeByName(subStr)
+	if err != nil {
+		logrus.Error("DB_ERROR: error happen when query employee list")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "DB_ERROR",
+			"err_msg": "error happen when query employee list",
+		})
+		return
+	}
+	resp := []model.Employee{}
+	for idx, info := range employeeList {
+		resp[idx] = model.Employee{
+			Id:    info.Id,
+			Name:  info.Name,
+			Auth:  info.Auth,
+			Money: info.Money,
+		}
+	}
+	logrus.Info("OK")
+	c.JSON(http.StatusOK, gin.H{
+		"err":            "NULL",
+		"employees_list": resp,
 	})
 	return
 }

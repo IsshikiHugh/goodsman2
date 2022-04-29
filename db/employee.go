@@ -5,6 +5,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"goodsman2.0/model"
 )
 
@@ -41,6 +42,32 @@ func QueryEmployeeByID(empID string) (employee *model.Employee, err error) {
 	ctx := context.TODO()
 	filter := bson.D{{"emp_id", empID}}
 	err = MongoDB.EmpColl.FindOne(ctx, filter).Decode(&employee)
+	if err != nil {
+		logrus.Error("")
+		return
+	}
+	return
+}
+
+// pass nothing to get all
+// pass name to get employees with *name*
+func QueryAllEmployeeByName(name ...string) (employees []*model.Employee, err error) {
+	ctx := context.TODO()
+	filter := bson.M{}
+	if len(name) != 0 {
+		filter = bson.M{
+			"name": bson.M{
+				"$regex": primitive.Regex{
+					Pattern: "*" + name[0] + "*",
+					Options: "i"}}}
+	}
+
+	cursor, err := MongoDB.EmpColl.Find(ctx, filter)
+	if err != nil {
+		logrus.Error("")
+		return
+	}
+	err = cursor.All(ctx, &employees)
 	if err != nil {
 		logrus.Error("")
 		return
