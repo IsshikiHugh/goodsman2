@@ -29,10 +29,37 @@ func CreateNewRecordsH(record *model.Record_H) (recordID string, err error) {
 }
 
 func UpdateRecordsH(record *model.Record_H) (err error) {
+	ctx := context.TODO()
+	filter := bson.M{
+		"$or": bson.A{
+			bson.D{{"id", record.Id}},
+			bson.D{{"gid", record.Gid}, {"eid", record.Eid}}}}
+
+	update := bson.D{}
+	if record.Date != "" {
+		update = append(update, bson.E{"date", record.Date})
+	}
+	if record.Num >= 0 {
+		update = append(update, bson.E{"num", record.Num})
+	}
+
+	_, err = MongoDB.HRecordsColl.UpdateOne(ctx, filter, update)
+	if err != nil {
+		logrus.Error("")
+		return
+	}
 	return
 }
 
 func DeleteRecordsHByGidAndEid(Gid string, Eid string) (err error) {
+	ctx := context.TODO()
+	filter := bson.D{{"gid", Gid}, {"eid", Eid}}
+
+	_, err = MongoDB.HRecordsColl.DeleteOne(ctx, filter)
+	if err != nil {
+		logrus.Error("")
+		return
+	}
 	return
 }
 
@@ -47,14 +74,15 @@ func CreateNewRecordsD(record *model.Record_D) (recordID string, err error) {
 	return record.Id, nil
 }
 
-func QueryRecordsHByGidOrEid(Gid string, Eid ...string) (records []*model.Record_H, err error) {
+//必须有Eid，Gid可选
+func QueryRecordsHByGidOrEid(Eid string, Gid ...string) (records []*model.Record_H, err error) {
 	ctx := context.TODO()
 	filter := bson.D{}
-	if Gid != "" {
-		filter = append(filter, bson.E{"gid", Gid[0]})
+	if Eid != "" {
+		filter = append(filter, bson.E{"eid", Eid})
 	}
-	if len(Eid) > 0 {
-		filter = append(filter, bson.E{"eid", Eid[0]})
+	if len(Gid) > 0 {
+		filter = append(filter, bson.E{"gid", Gid[0]})
 	}
 
 	cursor, err := MongoDB.HRecordsColl.Find(ctx, filter)

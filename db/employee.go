@@ -10,6 +10,7 @@ import (
 )
 
 func NewEmployeeStateFormat(Eid string) (employee *model.Employee) {
+	employee.Id = Eid
 	employee.Auth = -1
 	employee.Money = -1
 	return
