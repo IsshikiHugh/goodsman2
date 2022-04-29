@@ -18,7 +18,6 @@ func NewRecordsHStateFormat(rid string) (records *model.Record_H) {
 }
 
 func CreateNewRecordsH(record *model.Record_H) (recordID string, err error) {
-	record.Id = primitive.NewObjectID().Hex()
 	ctx := context.TODO()
 	_, err = MongoDB.HRecordsColl.InsertOne(ctx, &record)
 	if err != nil {
@@ -75,7 +74,7 @@ func CreateNewRecordsD(record *model.Record_D) (recordID string, err error) {
 }
 
 //必须有Eid，Gid可选
-func QueryRecordsHByGidOrEid(Eid string, Gid ...string) (records []*model.Record_H, err error) {
+func QueryRecordsHByEidOrGid(Eid string, Gid ...string) (records []*model.Record_H, err error) {
 	ctx := context.TODO()
 	filter := bson.D{}
 	if Eid != "" {
