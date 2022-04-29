@@ -128,7 +128,7 @@ func EmployeeBorrowGoods(e *model.Employee, g *model.Goods, gn int) error {
 		Date: utils.GetCurrentTime(),
 	}
 	//TODO:
-	err = CreateNewRecordsH(newRecords)
+	_, err = CreateNewRecordsH(newRecords)
 	if err != nil {
 		return errors.New("error happen when create borrow records")
 	}
