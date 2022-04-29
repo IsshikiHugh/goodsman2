@@ -3,8 +3,9 @@ package db
 import (
 	"context"
 	"fmt"
-	"goodsman/config"
 	"time"
+
+	"goodsman2.0/config"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
