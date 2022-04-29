@@ -24,7 +24,7 @@ func NewEmployeeStateFormat(Eid string) (employee *model.Employee) {
 //employee.Id needed
 func UpdateEmployeeState(employee *model.Employee) (err error) {
 	ctx := context.TODO()
-	filter := bson.D{{"id", employee.Id}}
+	filter := bson.D{{"_id", employee.Id}}
 	update := bson.D{}
 	if employee.Auth >= 0 {
 		update = append(update, bson.E{"auth", employee.Auth})
@@ -53,7 +53,7 @@ func UpdateEmployeeState(employee *model.Employee) (err error) {
 //Query an employee by id
 func QueryEmployeeByID(empID string) (employee *model.Employee, err error) {
 	ctx := context.TODO()
-	filter := bson.D{{"emp_id", empID}}
+	filter := bson.D{{"_id", empID}}
 	err = MongoDB.EmpColl.FindOne(ctx, filter).Decode(&employee)
 	if err != nil {
 		logrus.Error(err.Error())
