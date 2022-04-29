@@ -31,6 +31,10 @@ func QueryGoodsByID(goodID string) (good *model.Goods, err error) {
 	return
 }
 
+func QueryAllGoods() (goods []*model.Goods, err error) {
+	return QueryAllGoodsByName()
+}
+
 //可选输入name，模糊搜索
 func QueryAllGoodsByName(name ...string) (goods []*model.Goods, err error) {
 	ctx := context.TODO()
