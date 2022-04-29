@@ -11,8 +11,8 @@ import (
 )
 
 //Goods生成器
-func NewGoodsStateFormat(gid string) model.Goods {
-	var goods model.Goods
+func NewGoodsStateFormat(gid string) *model.Goods {
+	var goods *model.Goods
 	goods.Id = gid
 	goods.Auth = -1
 	goods.Num = -1
@@ -21,7 +21,7 @@ func NewGoodsStateFormat(gid string) model.Goods {
 }
 
 //通过ID搜索good
-func QueryGoodsByID(goodID string) (good model.Goods, err error) {
+func QueryGoodsByID(goodID string) (good *model.Goods, err error) {
 	ctx := context.TODO()
 	filter := bson.D{{"good_id", goodID}}
 	err = MongoDB.GoodsColl.FindOne(ctx, filter).Decode(&good)
@@ -33,7 +33,7 @@ func QueryGoodsByID(goodID string) (good model.Goods, err error) {
 }
 
 //可选输入name，模糊搜索
-func QueryAllGoodsByName(name ...string) (goods []model.Goods, err error) {
+func QueryAllGoodsByName(name ...string) (goods []*model.Goods, err error) {
 	ctx := context.TODO()
 	filter := bson.M{}
 	if len(name) != 0 {

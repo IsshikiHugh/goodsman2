@@ -89,7 +89,7 @@ func BorrowGoods(c *gin.Context) {
 		})
 		return
 	}
-	err = EmployeeBorrowGoods(&employee, &goods, req.Num)
+	err = EmployeeBorrowGoods(employee, goods, req.Num)
 	if err != nil {
 		logrus.Error("DB_ERROR: ", err)
 		c.JSON(http.StatusBadRequest, gin.H{
