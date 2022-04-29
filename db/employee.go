@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
@@ -9,6 +10,7 @@ import (
 	"goodsman2.0/model"
 )
 
+//Generate a new employee
 func NewEmployeeStateFormat(Eid string) (employee *model.Employee) {
 	employee.Id = Eid
 	employee.Auth = -1
@@ -16,6 +18,10 @@ func NewEmployeeStateFormat(Eid string) (employee *model.Employee) {
 	return
 }
 
+//Update Employee state
+//only columns which is not default value
+//will be updated.
+//employee.Id needed
 func UpdateEmployeeState(employee *model.Employee) (err error) {
 	ctx := context.TODO()
 	filter := bson.D{{"id", employee.Id}}
@@ -31,20 +37,26 @@ func UpdateEmployeeState(employee *model.Employee) (err error) {
 	}
 	update = bson.D{{"$set", update}}
 
-	_, err = MongoDB.EmpColl.UpdateOne(ctx, filter, update)
+	result, err := MongoDB.EmpColl.UpdateOne(ctx, filter, update)
 	if err != nil {
-		logrus.Error("")
+		logrus.Error(err.Error())
+		return
+	}
+	if result.MatchedCount == 0 {
+		err = errors.New(MONGO_EMPTY)
+		logrus.Error(err.Error())
 		return
 	}
 	return
 }
 
+//Query an employee by id
 func QueryEmployeeByID(empID string) (employee *model.Employee, err error) {
 	ctx := context.TODO()
 	filter := bson.D{{"emp_id", empID}}
 	err = MongoDB.EmpColl.FindOne(ctx, filter).Decode(&employee)
 	if err != nil {
-		logrus.Error("")
+		logrus.Error(err.Error())
 		return
 	}
 	return
@@ -65,12 +77,12 @@ func QueryAllEmployeeByName(name ...string) (employees []*model.Employee, err er
 
 	cursor, err := MongoDB.EmpColl.Find(ctx, filter)
 	if err != nil {
-		logrus.Error("")
+		logrus.Error(err.Error())
 		return
 	}
 	err = cursor.All(ctx, &employees)
 	if err != nil {
-		logrus.Error("")
+		logrus.Error(err.Error())
 		return
 	}
 	return

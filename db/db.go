@@ -16,6 +16,8 @@ type Mongodb struct {
 
 var (
 	MongoDB Mongodb
+
+	MONGO_EMPTY = "mongo: no documents in result"
 )
 
 func Init() {

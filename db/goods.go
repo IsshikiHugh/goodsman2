@@ -2,12 +2,12 @@ package db
 
 import (
 	"context"
+	"errors"
 
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"goodsman2.0/model"
-	"goodsman2.0/utils"
 )
 
 //Goods生成器
@@ -19,23 +19,26 @@ func NewGoodsStateFormat(gid string) (goods *model.Goods) {
 	return
 }
 
-//通过ID搜索good
+//Query goods by Gid
 func QueryGoodsByID(goodID string) (good *model.Goods, err error) {
 	ctx := context.TODO()
 	filter := bson.D{{"good_id", goodID}}
 	err = MongoDB.GoodsColl.FindOne(ctx, filter).Decode(&good)
 	if err != nil {
-		logrus.Error("")
+		logrus.Error(err.Error())
 		return
 	}
 	return
 }
 
+//query all goods
 func QueryAllGoods() (goods []*model.Goods, err error) {
 	return QueryAllGoodsByName()
 }
 
-//可选输入name，模糊搜索
+//query goods by name.
+//you can not pass name, or
+//pass name="" to query all goods
 func QueryAllGoodsByName(name ...string) (goods []*model.Goods, err error) {
 	ctx := context.TODO()
 	filter := bson.M{}
@@ -49,18 +52,21 @@ func QueryAllGoodsByName(name ...string) (goods []*model.Goods, err error) {
 
 	cursor, err := MongoDB.GoodsColl.Find(ctx, filter)
 	if err != nil {
-		logrus.Error("")
+		logrus.Error(err.Error())
 		return
 	}
 	err = cursor.All(ctx, &goods)
 	if err != nil {
-		logrus.Error("")
+		logrus.Error(err.Error())
 		return
 	}
 	return
 }
 
-// 数值字段默认值为-1
+//Update Goods state
+//only columns which is not default value
+//will be updated.
+//goods.Id needed
 func UpdateGoodsState(goods *model.Goods) (err error) {
 	ctx := context.TODO()
 	filter := bson.D{{"good_id", goods.Id}}
@@ -88,24 +94,26 @@ func UpdateGoodsState(goods *model.Goods) (err error) {
 	}
 	update = bson.D{{"$set", update}}
 
-	_, err = MongoDB.GoodsColl.UpdateOne(ctx, filter, update)
+	result, err := MongoDB.GoodsColl.UpdateOne(ctx, filter, update)
 
 	if err != nil {
-		logrus.Error("")
+		logrus.Error(err.Error())
+		return
+	}
+	if result.MatchedCount == 0 {
+		err = errors.New(MONGO_EMPTY)
+		logrus.Error(err.Error())
 		return
 	}
 	return
 }
 
 //新建物品
-func CreateNewGoods(good *model.Goods) (goodID string, err error) {
-	goodID = utils.GenerateUID()
-	good.Id = goodID
-
+func CreateNewGoods(good *model.Goods) (err error) {
 	ctx := context.TODO()
 	_, err = MongoDB.GoodsColl.InsertOne(ctx, &good)
 	if err != nil {
-		logrus.Error("")
+		logrus.Error(err.Error())
 		return
 	}
 	return

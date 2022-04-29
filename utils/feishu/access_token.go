@@ -106,7 +106,6 @@ func DefaultRefreshFunc(url string) *http.Request {
 	}
 	req.Header.Set("User-Agent", "goodsman")
 	req.Header.Set("Host", "open.feishu.cn")
-	// req.Header.Set("Content-Length", fmt.Sprintf("%d", len(content)))
-	req.Header.Set("Content-Length", "95")
+	req.Header.Set("Content-Length", "95") //FIXME:
 	return req
 }
