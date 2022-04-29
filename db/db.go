@@ -1,7 +1,7 @@
 package db
 
 import (
-	"goodsman2.0/config"
+	"goodsman2/config"
 
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"

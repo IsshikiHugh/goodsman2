@@ -43,3 +43,15 @@ type CloseCertainRecordsHReq struct {
 	Eid string `json:"employee_id" binding:"required"`
 	Rid string `json:"records_id" binding:"required"`
 }
+
+type ChangeEmployeeMoneyReq struct {
+	Aid    string  `json:"admin_id" binding:"required"`
+	Eid    string  `json:"employee_id" binding:"required"`
+	DelNum float64 `json:"del_num" binding:"required"`
+}
+
+type ChangeEmployeeAuthReq struct {
+	Aid     string `json:"admin_id" binding:"required"`
+	Eid     string `json:"employee_id" binding:"required"`
+	NewAuth int    `json:"new_auth" binding:"required"`
+}

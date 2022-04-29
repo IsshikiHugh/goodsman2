@@ -5,9 +5,9 @@ package handlers
 import (
 	"net/http"
 
-	. "goodsman2.0/db"
-	"goodsman2.0/model"
-	"goodsman2.0/utils"
+	. "goodsman2/db"
+	"goodsman2/model"
+	"goodsman2/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -100,6 +100,131 @@ func GetRecordsHangOfCertainEmployee(c *gin.Context) {
 	c.JSON(http.StatusBadRequest, gin.H{
 		"err":          "NULL",
 		"records_list": records,
+	})
+	return
+}
+
+// Be used to change employee's money.
+func ChangeEmployeeMoney(c *gin.Context) {
+	var req model.ChangeEmployeeMoneyReq
+	err := c.Bind(&req)
+	if err != nil {
+		logrus.Error("INVALID_PARAMS: ", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "INVALID_PARAMS",
+			"err_msg": err,
+		})
+		return
+	}
+
+	admin, err := QueryEmployeeByID(req.Aid)
+	if err != nil {
+		logrus.Error("DB_ERROR: error happen when query employee by aid")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "DB_ERROR",
+			"err_msg": "error happen when query employee by aid",
+		})
+		return
+	}
+	employee, err := QueryEmployeeByID(req.Eid)
+	if err != nil {
+		logrus.Error("DB_ERROR: error happen when query employee by eid")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "DB_ERROR",
+			"err_msg": "error happen when query employee by eid",
+		})
+		return
+	}
+	if admin.Auth < AuthSuper {
+		logrus.Error("CONDITION_NOT_MET: auth insufficient")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "CONDITION_NOT_MET",
+			"err_msg": "auth insufficient",
+		})
+		return
+	}
+
+	newEmployeeState := NewEmployeeStateFormat(req.Eid)
+	newEmployeeState.Money = employee.Money + req.DelNum
+	err = UpdateEmployeeState(newEmployeeState)
+	if err != nil {
+		logrus.Error("DB_ERROR: error happen when update employee state")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "DB_ERROR",
+			"err_msg": "error happen when update employee state",
+		})
+		return
+	}
+	logrus.Info("OK")
+	c.JSON(http.StatusOK, gin.H{
+		"err": "NULL",
+	})
+	return
+}
+
+func ChangeEmployeeAuth(c *gin.Context) {
+	var req model.ChangeEmployeeAuthReq
+	err := c.Bind(&req)
+	if err != nil {
+		logrus.Error("INVALID_PARAMS: ", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "INVALID_PARAMS",
+			"err_msg": err,
+		})
+		return
+	}
+
+	admin, err := QueryEmployeeByID(req.Aid)
+	if err != nil {
+		logrus.Error("DB_ERROR: error happen when query employee by aid")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "DB_ERROR",
+			"err_msg": "error happen when query employee by aid",
+		})
+		return
+	}
+	_, err = QueryEmployeeByID(req.Eid)
+	if err != nil {
+		logrus.Error("DB_ERROR: error happen when query employee by eid")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "DB_ERROR",
+			"err_msg": "error happen when query employee by eid",
+		})
+		return
+	}
+	if admin.Auth < AuthSuper {
+		logrus.Error("CONDITION_NOT_MET: auth insufficient")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "CONDITION_NOT_MET",
+			"err_msg": "auth insufficient",
+		})
+		return
+	}
+
+	if !(AuthEmplo <= req.NewAuth && req.NewAuth <= AuthSuper) {
+		logrus.Error("INVALID_PARAMS: invalid auth")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "INVALID_PARAMS",
+			"err_msg": "invalid auth",
+		})
+		return
+	}
+
+	newEmployeeState := NewEmployeeStateFormat(req.Eid)
+	newEmployeeState.Auth = req.NewAuth
+	err = UpdateEmployeeState(newEmployeeState)
+	if err != nil {
+		logrus.Error("DB_ERROR: error happen when update employee state")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "DB_ERROR",
+			"err_msg": "error happen when update employee state",
+		})
+		return
+	}
+
+	logrus.Info("OK")
+	c.JSON(http.StatusOK, gin.H{
+		"err": "NULL",
 	})
 	return
 }

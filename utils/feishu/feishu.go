@@ -1,6 +1,6 @@
 package feishu
 
-import "goodsman2.0/config"
+import "goodsman2/config"
 
 var (
 	TenantTokenManager *CommonAccessTokenManager

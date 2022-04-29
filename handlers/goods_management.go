@@ -6,9 +6,9 @@ import (
 	"errors"
 	"net/http"
 
-	. "goodsman2.0/db"
-	"goodsman2.0/model"
-	"goodsman2.0/utils"
+	. "goodsman2/db"
+	"goodsman2/model"
+	"goodsman2/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -135,7 +135,7 @@ func ReturnGoods(c *gin.Context) {
 	if len(recordsHs) > 1 {
 		logrus.Warn("multiple records with certain Gid and Eid!")
 	}
-	// only recordsHs[0] can and must exist
+	// only recordsHs] can and must exist
 	if len(recordsHs) == 0 || recordsHs[0].Num < req.Num {
 		logrus.Error("CONDITION_NOT_MET: recordsH doesn't exist")
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -321,7 +321,7 @@ func ChangeGoodsNumber(c *gin.Context) {
 
 	errT, err := adminChangeGoodsNum(req.Gid, req.DelNum)
 	if err != nil {
-		logrus.Error(err, ": ", err)
+		logrus.Error(errT, ": ", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     errT,
 			"err_msg": err,
@@ -369,7 +369,7 @@ func ChangeGoodsPrice(c *gin.Context) {
 
 	errT, err := adminChangeGoodsPrice(req.Gid, req.NewPrice)
 	if err != nil {
-		logrus.Error(err, ": ", err)
+		logrus.Error(errT, ": ", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     errT,
 			"err_msg": err,

@@ -25,6 +25,8 @@ func InitRouter() *gin.Engine {
 	apiGroup := r.Group("/api")
 	{
 		apiGroup.GET("/user/records/hang", GetRecordsHangOfCertainEmployee)
+		apiGroup.POST("/user/update/money", ChangeEmployeeMoney)
+		apiGroup.POST("/user/update/auth", ChangeEmployeeAuth)
 
 		apiGroup.GET("/users/info", GetEmployeeInfo)
 		apiGroup.GET("/users/search", GetCertainEmployeeList)

@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 
+	"goodsman2/model"
+
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"goodsman2.0/model"
 )
 
 //Generate a new employee

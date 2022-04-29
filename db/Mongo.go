@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"goodsman2.0/config"
+	"goodsman2/config"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -18,7 +18,7 @@ func initMongo(cfg config.DBcfg) (*mongo.Database, error) {
 	clientoptions.SetConnectTimeout(2 * time.Second)
 	clientoptions.SetSocketTimeout(2 * time.Second)
 	clientoptions.SetServerSelectionTimeout(2 * time.Second)
-	clientoptions.Auth.AuthSource = "goodsman2.0"
+	clientoptions.Auth.AuthSource = "goodsman2"
 	db, err := mongo.Connect(context.TODO(), clientoptions)
 
 	if err != nil {

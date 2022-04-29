@@ -1,4 +1,4 @@
-module goodsman2.0
+module goodsman2
 
 go 1.18
 

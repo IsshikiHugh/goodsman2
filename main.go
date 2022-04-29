@@ -5,11 +5,12 @@ import (
 	"net/http"
 	"time"
 
+	"goodsman2/config"
+	"goodsman2/db"
+	"goodsman2/handlers"
+	"goodsman2/utils/feishu"
+
 	"github.com/sirupsen/logrus"
-	"goodsman2.0/config"
-	"goodsman2.0/db"
-	"goodsman2.0/handlers"
-	"goodsman2.0/utils/feishu"
 )
 
 func main() {

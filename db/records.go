@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 
+	"goodsman2/model"
+	"goodsman2/utils"
+
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
-	"goodsman2.0/model"
-	"goodsman2.0/utils"
 )
 
 //Generate a new records_hang

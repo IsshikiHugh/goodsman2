@@ -9,9 +9,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
-	. "goodsman2.0/db"
-	"goodsman2.0/model"
-	"goodsman2.0/utils"
+	. "goodsman2/db"
+	"goodsman2/model"
+	"goodsman2/utils"
 )
 
 func CloseCertainRecordsH(c *gin.Context) {
