@@ -7,8 +7,20 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"goodsman2.0/model"
+	"goodsman2.0/utils"
 )
 
+//Goods生成器
+func NewGoodsStateFormat(gid string) model.Goods {
+	var goods model.Goods
+	goods.Id = gid
+	goods.Auth = -1
+	goods.Num = -1
+	goods.Price = -1
+	return goods
+}
+
+//通过ID搜索good
 func QueryGoodsByID(goodID string) (good model.Goods, err error) {
 	ctx := context.TODO()
 	filter := bson.D{{"good_id", goodID}}
@@ -20,14 +32,15 @@ func QueryGoodsByID(goodID string) (good model.Goods, err error) {
 	return
 }
 
-func QueryAllGoodsByName(name string) (goods []model.Goods, err error) {
+//可选输入name，模糊搜索
+func QueryAllGoodsByName(name ...string) (goods []model.Goods, err error) {
 	ctx := context.TODO()
 	filter := bson.M{}
-	if name != "" {
+	if len(name) != 0 {
 		filter = bson.M{
 			"name": bson.M{
 				"$regex": primitive.Regex{
-					Pattern: "*" + name + "*",
+					Pattern: "*" + name[0] + "*",
 					Options: "i"}}}
 	}
 
@@ -44,17 +57,8 @@ func QueryAllGoodsByName(name string) (goods []model.Goods, err error) {
 	return
 }
 
-func NewGoodsStateFormat(gid string) model.Goods {
-	var goods model.Goods
-	goods.Id = gid
-	goods.Auth = -1
-	goods.Num = -1
-	goods.Price = -1
-	return goods
-}
-
-// Num 和 Price 字段可能为0，若不修改请设置为负值
-func UpdateGoodsState(goods model.Goods) (err error) {
+// 数值字段默认值为-1
+func UpdateGoodsState(goods *model.Goods) (err error) {
 	ctx := context.TODO()
 	filter := bson.D{{"good_id", goods.Id}}
 	update := bson.D{}
@@ -73,7 +77,7 @@ func UpdateGoodsState(goods model.Goods) (err error) {
 	if goods.Price >= 0 {
 		update = append(update, bson.E{"price", goods.Price})
 	}
-	if goods.Auth != 0 {
+	if goods.Auth >= 0 {
 		update = append(update, bson.E{"auth", goods.Auth})
 	}
 	if goods.Image != "" {
@@ -83,6 +87,20 @@ func UpdateGoodsState(goods model.Goods) (err error) {
 
 	_, err = MongoDB.GoodsColl.UpdateOne(ctx, filter, update)
 
+	if err != nil {
+		logrus.Error("")
+		return
+	}
+	return
+}
+
+//新建物品
+func CreateNewGoods(good *model.Goods) (goodID string, err error) {
+	goodID = utils.GenerateUID()
+	good.Id = goodID
+
+	ctx := context.TODO()
+	_, err = MongoDB.GoodsColl.InsertOne(ctx, &good)
 	if err != nil {
 		logrus.Error("")
 		return

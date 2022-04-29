@@ -23,10 +23,13 @@ type Record_H struct {
 	Eid  string `json:"eid"`
 	Gid  string `json:"gid"`
 	Num  int    `json:"num"`
-	Date string `json:"date"` //TODO:
+	Date string `json:"date"`
 }
 
 type Record_D struct {
-	*Record_H
-	Origin string `json:"origin"`
+	Id   string `json:"id"`
+	Eid  string `json:"eid"`
+	Gid  string `json:"gid"`
+	Num  int    `json:"num"`
+	Date string `json:"date"`
 }
