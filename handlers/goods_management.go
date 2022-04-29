@@ -107,35 +107,6 @@ func BorrowGoods(c *gin.Context) {
 	return
 }
 
-func employeeBorrowGoods(e *model.Employee, g *model.Goods, gn int) error {
-	newGoodsState := NewGoodsStateFormat(g.Id)
-	newGoodsState.Num = g.Num - gn
-	err := UpdateGoodsState(newGoodsState)
-	if err != nil {
-		return errors.New("error happen when update goods state")
-	}
-
-	newEmployeeState := NewEmployeeStateFormat(e.Id)
-	newEmployeeState.Money = e.Money - g.Price*float64(gn)
-	err = UpdateEmployeeState(newEmployeeState)
-	if err != nil {
-		return errors.New("error happen when update employee state")
-	}
-
-	newRecords := &model.Record_H{
-		Id:   utils.GenerateUID(),
-		Eid:  e.Id,
-		Gid:  g.Id,
-		Num:  gn,
-		Date: utils.GetCurrentTime(),
-	}
-	_, err = CreateNewRecordsH(newRecords)
-	if err != nil {
-		return errors.New("error happen when create borrow records")
-	}
-	return nil
-}
-
 // Be used to accomplish 'return' action
 // from employee indexed by eid
 // about goods indexed by gid and described by number of borrowed goods.
@@ -269,4 +240,227 @@ func GetCertainGoodsBriefInfoList(c *gin.Context) {
 		"goods_list": resp,
 	})
 	return
+}
+
+// Be used to add new goods.
+func AddNewGoods(c *gin.Context) {
+	var req model.AddNewGoodsReq
+	err := c.Bind(&req)
+	if err != nil {
+		logrus.Error("INVALID_PARAMS: ", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "INVALID_PARAMS",
+			"err_msg": err,
+		})
+		return
+	}
+	employee, err := QueryEmployeeByID(req.Eid)
+	if err != nil {
+		logrus.Error("DB_ERROR: error happen when query employee by eid")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "DB_ERROR",
+			"err_msg": "error happen when query employee by eid",
+		})
+		return
+	}
+	if employee.Auth < AuthAdmin {
+		logrus.Error("CONDITION_NOT_MET: auth insufficient")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "CONDITION_NOT_MET",
+			"err_msg": "auth insufficient",
+		})
+		return
+	}
+	gid, err := adminAddNewGoods(&req.Goods)
+	if err != nil {
+		logrus.Error("DB_ERROR")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "DB_ERROR",
+			"err_msg": "error happen when create new goods",
+		})
+		return
+	}
+	logrus.Info("Create goods with gid: ", gid)
+	c.JSON(http.StatusOK, gin.H{
+		"err": "NULL",
+		"gid": gid,
+	})
+	return
+}
+
+// Be used to change goods number by del value.
+func ChangeGoodsNumber(c *gin.Context) {
+	var req model.ChangeGoodsNumberReq
+	err := c.Bind(&req)
+	if err != nil {
+		logrus.Error("INVALID_PARAMS: ", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "INVALID_PARAMS",
+			"err_msg": err,
+		})
+		return
+	}
+	employee, err := QueryEmployeeByID(req.Eid)
+	if err != nil {
+		logrus.Error("DB_ERROR: error happen when query employee by eid")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "DB_ERROR",
+			"err_msg": "error happen when query employee by eid",
+		})
+		return
+	}
+	if employee.Auth < AuthAdmin {
+		logrus.Error("CONDITION_NOT_MET: auth insufficient")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "CONDITION_NOT_MET",
+			"err_msg": "auth insufficient",
+		})
+		return
+	}
+
+	errT, err := adminChangeGoodsNum(req.Gid, req.DelNum)
+	if err != nil {
+		logrus.Error(err, ": ", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     errT,
+			"err_msg": err,
+		})
+		return
+	}
+	logrus.Info("OK")
+	c.JSON(http.StatusOK, gin.H{
+		"err": "NULL",
+	})
+	return
+}
+
+// TODO: function next to this comment could be merged.
+
+// Be used to change goods price by exact value.
+func ChangeGoodsPrice(c *gin.Context) {
+	var req model.ChangeGoodsPriceReq
+	err := c.Bind(&req)
+	if err != nil {
+		logrus.Error("INVALID_PARAMS: ", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "INVALID_PARAMS",
+			"err_msg": err,
+		})
+		return
+	}
+	employee, err := QueryEmployeeByID(req.Eid)
+	if err != nil {
+		logrus.Error("DB_ERROR: error happen when query employee by eid")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "DB_ERROR",
+			"err_msg": "error happen when query employee by eid",
+		})
+		return
+	}
+	if employee.Auth < AuthAdmin {
+		logrus.Error("CONDITION_NOT_MET: auth insufficient")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "CONDITION_NOT_MET",
+			"err_msg": "auth insufficient",
+		})
+		return
+	}
+
+	errT, err := adminChangeGoodsPrice(req.Gid, req.NewPrice)
+	if err != nil {
+		logrus.Error(err, ": ", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     errT,
+			"err_msg": err,
+		})
+		return
+	}
+	logrus.Info("OK")
+	c.JSON(http.StatusOK, gin.H{
+		"err": "NULL",
+	})
+	return
+}
+
+func employeeBorrowGoods(e *model.Employee, g *model.Goods, gn int) error {
+	newGoodsState := NewGoodsStateFormat(g.Id)
+	newGoodsState.Num = g.Num - gn
+	err := UpdateGoodsState(newGoodsState)
+	if err != nil {
+		return errors.New("error happen when update goods state")
+	}
+
+	newEmployeeState := NewEmployeeStateFormat(e.Id)
+	newEmployeeState.Money = e.Money - g.Price*float64(gn)
+	err = UpdateEmployeeState(newEmployeeState)
+	if err != nil {
+		return errors.New("error happen when update employee state")
+	}
+
+	newRecords := &model.Record_H{
+		Id:   utils.GenerateUID(),
+		Eid:  e.Id,
+		Gid:  g.Id,
+		Num:  gn,
+		Date: utils.GetCurrentTime(),
+	}
+	_, err = CreateNewRecordsH(newRecords)
+	if err != nil {
+		return errors.New("error happen when create borrow records")
+	}
+	return nil
+}
+
+func adminAddNewGoods(goods *model.AddNewGoodsReqGoods) (gid string, err error) {
+	gid = utils.GenerateUID()
+	newGoodsState := model.Goods{
+		Id:    gid,
+		Name:  goods.Name,
+		Lore:  goods.Lore,
+		Msg:   "No dynamic notes yet.",
+		Num:   goods.Num,
+		Price: goods.Price,
+		Auth:  goods.Auth,
+		Image: goods.Image,
+	}
+	err = CreateNewGoods(&newGoodsState)
+	return
+}
+
+func adminChangeGoodsNum(gid string, delNum int) (string, error) {
+	g, err := QueryGoodsByID(gid)
+	if err != nil {
+		logrus.Error(err)
+		return DB_ERROR, errors.New("error happen when query goods by gid")
+	}
+	if g.Num+delNum < 0 {
+		return CONDITION_NOT_MET, errors.New("you cannot reduce the goods number by more than the existing number")
+	}
+	newGoodsState := NewGoodsStateFormat(gid)
+	newGoodsState.Num = g.Num + delNum
+	err = UpdateGoodsState(newGoodsState)
+	if err != nil {
+		logrus.Error(err)
+		return DB_ERROR, errors.New("error happen when update goods state")
+	}
+	return "OK", nil
+}
+
+func adminChangeGoodsPrice(gid string, newPrice float64) (string, error) {
+	_, err := QueryGoodsByID(gid)
+	if err != nil {
+		logrus.Error(err)
+		return DB_ERROR, errors.New("error happen when query goods by gid")
+	}
+	if newPrice < 0 {
+		return CONDITION_NOT_MET, errors.New("you cannot set goods price to be negative")
+	}
+	newGoodsState := NewGoodsStateFormat(gid)
+	newGoodsState.Price = newPrice
+	err = UpdateGoodsState(newGoodsState)
+	if err != nil {
+		logrus.Error(err)
+		return DB_ERROR, errors.New("error happen when update goods state")
+	}
+	return "OK", nil
 }
