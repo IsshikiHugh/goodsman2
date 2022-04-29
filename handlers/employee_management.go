@@ -3,6 +3,7 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
 
 	. "goodsman2/db"
@@ -12,6 +13,70 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
+
+// Be used to deal code given by frontend and judge whether
+// the employee is in db.
+// If not, insert the employee into db and initialize it.
+func EmployeeLogin(c *gin.Context) {
+	code := c.DefaultQuery("code", "")
+	if code == "" {
+		logrus.Error("INVALID_PARAMS: code not found")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "INVALID_PARAMS",
+			"err_msg": "code not found",
+		})
+		return
+	}
+	employee, err := GetEmployeeFromFSByCode(code)
+	if err != nil {
+		logrus.Error("FEISHU_ERROR: cannot get employee info by feishu code")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "FEISHU_ERROR",
+			"err_msg": "cannot get employee info by feishu code",
+		})
+		return
+	}
+
+	_, err = QueryEmployeeByID(employee.Data.Eid)
+	if err == nil {
+		newEmployeeState := NewEmployeeStateFormat(employee.Data.Eid)
+		err = UpdateEmployeeState(newEmployeeState)
+		if err != nil {
+			logrus.Error("DB_ERROR: error happen when update employee")
+			c.JSON(http.StatusBadRequest, gin.H{
+				"err":     "DB_ERROR",
+				"err_msg": "error happen when update employee",
+			})
+			return
+		}
+	} else {
+		defaultMoney, _ := getDefaultMoney(AuthEmplo)
+		newEmployee := model.Employee{
+			Id:    employee.Data.Eid,
+			Name:  employee.Data.Name,
+			Auth:  AuthEmplo,
+			Money: defaultMoney,
+		}
+		err = CreateNewEmployee(&newEmployee)
+		if err != nil {
+			logrus.Error("DB_ERROR: error happen when create new employee")
+			c.JSON(http.StatusBadRequest, gin.H{
+				"err":     "DB_ERROR",
+				"err_msg": "error happen when create employee",
+			})
+			return
+		}
+		logrus.Info("create new employee: ", newEmployee.Name)
+	}
+	resp, _ := QueryEmployeeByID(employee.Data.Eid)
+
+	logrus.Info("OK")
+	c.JSON(http.StatusBadRequest, gin.H{
+		"err":      "NULL",
+		"employee": resp,
+	})
+	return
+}
 
 // Be used to get info of certain employee indexed by eid.
 func GetEmployeeInfo(c *gin.Context) {
@@ -227,4 +292,15 @@ func ChangeEmployeeAuth(c *gin.Context) {
 		"err": "NULL",
 	})
 	return
+}
+
+func getDefaultMoney(auth int) (float64, error) {
+	if !(AuthEmplo <= auth && auth <= AuthSuper) {
+		return 0, errors.New("invalid auth")
+	}
+	edg, err := QueryEmployeeByID("default_group_" + string(AuthEmplo))
+	if err != nil {
+		logrus.Fatal("can't query default group !!!!")
+	}
+	return edg.Money, nil
 }

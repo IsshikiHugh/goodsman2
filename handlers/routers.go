@@ -17,6 +17,7 @@ var (
 	INVALID_PARAMS    string = "INVALID_PARAMS"
 	DB_ERROR          string = "DB_ERROR"
 	CONDITION_NOT_MET string = "CONDITION_NOT_MET"
+	FEISHU_ERROR      string = "FEISHU_ERROR"
 )
 
 func InitRouter() *gin.Engine {
@@ -27,6 +28,8 @@ func InitRouter() *gin.Engine {
 		apiGroup.GET("/user/records/hang", GetRecordsHangOfCertainEmployee)
 		apiGroup.POST("/user/update/money", ChangeEmployeeMoney)
 		apiGroup.POST("/user/update/auth", ChangeEmployeeAuth)
+
+		apiGroup.POST("/user/login", EmployeeLogin)
 
 		apiGroup.GET("/users/info", GetEmployeeInfo)
 		apiGroup.GET("/users/search", GetCertainEmployeeList)

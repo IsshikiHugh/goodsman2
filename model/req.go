@@ -55,3 +55,7 @@ type ChangeEmployeeAuthReq struct {
 	Eid     string `json:"employee_id" binding:"required"`
 	NewAuth int    `json:"new_auth" binding:"required"`
 }
+
+type EmployeeLoginReq struct {
+	Code string `json:"code" binding:"required"`
+}

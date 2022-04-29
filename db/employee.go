@@ -88,3 +88,13 @@ func QueryAllEmployeeByName(name ...string) (employees []*model.Employee, err er
 	}
 	return
 }
+
+func CreateNewEmployee(employee *model.Employee) error {
+	ctx := context.TODO()
+	_, err := MongoDB.HRecordsColl.InsertOne(ctx, &employee)
+	if err != nil {
+		logrus.Error(err.Error())
+		return err
+	}
+	return nil
+}
