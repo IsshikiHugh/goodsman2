@@ -22,7 +22,7 @@ func InitRouter() *gin.Engine {
 	}
 	// eventGroup := r.Group("/event")
 	// {
-	// 	eventGroup.POST("/received/msg", handler.ReplyCheck)
+	// 	eventGroup.POST("/received/msg", handlers.ReplyCheck)
 	// }
 	return r
 }
