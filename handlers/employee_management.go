@@ -73,3 +73,31 @@ func GetCertainEmployeeList(c *gin.Context) {
 	})
 	return
 }
+
+func GetRecordsHangOfCertainEmployee(c *gin.Context) {
+	eid := c.DefaultQuery("employee_id", "")
+	if eid == "" {
+		logrus.Error("INVALID_PARAMS: eid not found")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "INVALID_PARAMS",
+			"err_msg": "eid not found",
+		})
+		return
+	}
+	records, err := QueryRecordsHByEidOrGid(eid)
+	if err != nil {
+		logrus.Error("DB_ERROR: error happen when query records with eid")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "DB_ERROR",
+			"err_msg": "error happen when query records with eid",
+		})
+		return
+	}
+
+	logrus.Info("OK")
+	c.JSON(http.StatusBadRequest, gin.H{
+		"err":          "NULL",
+		"records_list": records,
+	})
+	return
+}

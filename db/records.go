@@ -47,7 +47,7 @@ func CreateNewRecordsD(record *model.Record_D) (recordID string, err error) {
 	return record.Id, nil
 }
 
-func QueryRecordsHByGidOrEid(Gid string, Eid ...string) (records []*model.Record_H, err error) {
+func QueryRecordsHByEidOrGid(Gid string, Eid ...string) (records []*model.Record_H, err error) {
 	ctx := context.TODO()
 	filter := bson.D{}
 	if Gid != "" {

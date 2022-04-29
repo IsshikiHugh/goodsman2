@@ -152,7 +152,7 @@ func ReturnGoods(c *gin.Context) {
 	}
 
 	// do something with records
-	recordsHs, err := QueryRecordsHByGidOrEid(req.Eid, req.Gid)
+	recordsHs, err := QueryRecordsHByEidOrGid(req.Eid, req.Gid)
 	if err != nil {
 		logrus.Error("DB_ERROR: error happen when query records by eid and gid")
 		c.JSON(http.StatusBadRequest, gin.H{
