@@ -144,7 +144,7 @@ func ReturnGoods(c *gin.Context) {
 		})
 		return
 	}
-	newRecordsD := &model.Record_D{
+	newRecordsD := &model.Record{
 		Id:   utils.GenerateUID(),
 		Eid:  recordsHs[0].Eid,
 		Gid:  recordsHs[0].Gid,
@@ -154,7 +154,7 @@ func ReturnGoods(c *gin.Context) {
 	_, errD := CreateNewRecordsD(newRecordsD)
 	if recordsHs[0].Num > req.Num {
 		logrus.Info("update recordsH")
-		newRecordsHState := NewRecordsHStateFormat(recordsHs[0].Id)
+		newRecordsHState := NewRecordStateFormat(recordsHs[0].Id)
 		newRecordsHState.Num = recordsHs[0].Num - req.Num
 		err = UpdateRecordsH(newRecordsHState)
 	} else if recordsHs[0].Num == req.Num {
@@ -234,10 +234,11 @@ func GetCertainGoodsBriefInfoList(c *gin.Context) {
 			Num:  info.Num,
 		}
 	}
+	respZip, _ := utils.GetZippedData(resp)
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
 		"err":        "NULL",
-		"goods_list": resp,
+		"goods_list": respZip,
 	})
 	return
 }
@@ -397,7 +398,7 @@ func employeeBorrowGoods(e *model.Employee, g *model.Goods, gn int) error {
 		return errors.New("error happen when update employee state")
 	}
 
-	newRecords := &model.Record_H{
+	newRecords := &model.Record{
 		Id:   utils.GenerateUID(),
 		Eid:  e.Id,
 		Gid:  g.Id,

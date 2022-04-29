@@ -11,7 +11,7 @@ import (
 )
 
 //Generate a new records_hang
-func NewRecordsHStateFormat(rid string) (records *model.Record_H) {
+func NewRecordStateFormat(rid string) (records *model.Record) {
 	records.Id = rid
 	records.Num = -1
 	records.Date = utils.GetCurrentTime()
@@ -19,7 +19,7 @@ func NewRecordsHStateFormat(rid string) (records *model.Record_H) {
 }
 
 //Insert a records_hang into db
-func CreateNewRecordsH(record *model.Record_H) (recordID string, err error) {
+func CreateNewRecordsH(record *model.Record) (recordID string, err error) {
 	ctx := context.TODO()
 	_, err = MongoDB.HRecordsColl.InsertOne(ctx, &record)
 	if err != nil {
@@ -34,7 +34,7 @@ func CreateNewRecordsH(record *model.Record_H) (recordID string, err error) {
 //will be updated. (date or num)
 //record.Id or
 //both record.Gid and record.Eid needed.
-func UpdateRecordsH(record *model.Record_H) (err error) {
+func UpdateRecordsH(record *model.Record) (err error) {
 	ctx := context.TODO()
 	filter := bson.M{
 		"$or": bson.A{
@@ -86,7 +86,7 @@ func DeleteRecordsHByGidAndEid(Gid string, Eid string) (err error) {
 	return
 }
 
-func CreateNewRecordsD(record *model.Record_D) (recordID string, err error) {
+func CreateNewRecordsD(record *model.Record) (recordID string, err error) {
 	ctx := context.TODO()
 	_, err = MongoDB.HRecordsColl.InsertOne(ctx, &record)
 	if err != nil {
@@ -99,7 +99,7 @@ func CreateNewRecordsD(record *model.Record_D) (recordID string, err error) {
 //Query records_hang by Eid or
 //both Eid and Gid
 //Eid needed, Gid optional
-func QueryRecordsHByEidOrGid(Eid string, Gid ...string) (records []*model.Record_H, err error) {
+func QueryRecordsHByEidOrGid(Eid string, Gid ...string) (records []*model.Record, err error) {
 	ctx := context.TODO()
 	filter := bson.D{}
 	if Eid != "" {
@@ -115,6 +115,17 @@ func QueryRecordsHByEidOrGid(Eid string, Gid ...string) (records []*model.Record
 		return
 	}
 	err = cursor.All(ctx, &records)
+	if err != nil {
+		logrus.Error(err.Error())
+		return
+	}
+	return
+}
+
+func QueryRecordsHByRid(rid string) (records model.Record, err error) {
+	ctx := context.TODO()
+	filter := bson.D{{"_id", rid}}
+	err = MongoDB.HRecordsColl.FindOne(ctx, filter).Decode(&records)
 	if err != nil {
 		logrus.Error(err.Error())
 		return

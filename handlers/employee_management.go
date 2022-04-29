@@ -7,6 +7,7 @@ import (
 
 	. "goodsman2.0/db"
 	"goodsman2.0/model"
+	"goodsman2.0/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -66,10 +67,11 @@ func GetCertainEmployeeList(c *gin.Context) {
 			Money: info.Money,
 		}
 	}
+	respZip, _ := utils.GetZippedData(resp)
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
 		"err":            "NULL",
-		"employees_list": resp,
+		"employees_list": respZip,
 	})
 	return
 }

@@ -18,15 +18,7 @@ type Employee struct {
 	Money float64 `json:"money" bson:"money"`
 }
 
-type Record_H struct {
-	Id   string `json:"id" bson:"_id"`
-	Eid  string `json:"eid" bson:"eid"`
-	Gid  string `json:"gid" bson:"gid"`
-	Num  int    `json:"num" bson:"num"`
-	Date string `json:"date" bson:"date"`
-}
-
-type Record_D struct {
+type Record struct {
 	Id   string `json:"id" bson:"_id"`
 	Eid  string `json:"eid" bson:"eid"`
 	Gid  string `json:"gid" bson:"gid"`

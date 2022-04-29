@@ -37,6 +37,7 @@ func InitRouter() *gin.Engine {
 		apiGroup.POST("/goods/update/num", ChangeGoodsNumber)
 		apiGroup.POST("/goods/update/price", ChangeGoodsPrice)
 
+		apiGroup.POST("/records/close", CloseCertainRecordsH)
 	}
 	// eventGroup := r.Group("/event")
 	// {

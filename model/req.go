@@ -38,3 +38,8 @@ type ChangeGoodsPriceReq struct {
 	Gid      string  `json:"goods_id" binding:"required"`
 	NewPrice float64 `json:"new_price" binding:"required"`
 }
+
+type CloseCertainRecordsHReq struct {
+	Eid string `json:"employee_id" binding:"required"`
+	Rid string `json:"records_id" binding:"required"`
+}
