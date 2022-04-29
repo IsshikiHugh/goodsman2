@@ -2,14 +2,15 @@ package db
 
 import (
 	"context"
+	"errors"
 
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"goodsman2.0/model"
 	"goodsman2.0/utils"
 )
 
+//Generate a new records_hang
 func NewRecordsHStateFormat(rid string) (records *model.Record_H) {
 	records.Id = rid
 	records.Num = -1
@@ -17,16 +18,22 @@ func NewRecordsHStateFormat(rid string) (records *model.Record_H) {
 	return
 }
 
+//Insert a records_hang into db
 func CreateNewRecordsH(record *model.Record_H) (recordID string, err error) {
 	ctx := context.TODO()
 	_, err = MongoDB.HRecordsColl.InsertOne(ctx, &record)
 	if err != nil {
-		logrus.Error("")
+		logrus.Error(err.Error())
 		return
 	}
 	return record.Id, nil
 }
 
+//Update a records_hang
+//only columns which is not default value
+//will be updated. (date or num)
+//record.Id or
+//both record.Gid and record.Eid needed.
 func UpdateRecordsH(record *model.Record_H) (err error) {
 	ctx := context.TODO()
 	filter := bson.M{
@@ -42,9 +49,26 @@ func UpdateRecordsH(record *model.Record_H) (err error) {
 		update = append(update, bson.E{"num", record.Num})
 	}
 
-	_, err = MongoDB.HRecordsColl.UpdateOne(ctx, filter, update)
+	result, err := MongoDB.HRecordsColl.UpdateOne(ctx, filter, update)
 	if err != nil {
-		logrus.Error("")
+		logrus.Error(err.Error())
+		return
+	}
+	if result.MatchedCount == 0 {
+		err = errors.New(MONGO_EMPTY)
+		logrus.Error(err.Error())
+		return
+	}
+	return
+}
+
+func DeleteRecordsHByRid(Rid string) (err error) {
+	ctx := context.TODO()
+	filter := bson.D{{"id", Rid}}
+
+	_, err = MongoDB.HRecordsColl.DeleteOne(ctx, filter)
+	if err != nil {
+		logrus.Error(err.Error())
 		return
 	}
 	return
@@ -56,14 +80,13 @@ func DeleteRecordsHByGidAndEid(Gid string, Eid string) (err error) {
 
 	_, err = MongoDB.HRecordsColl.DeleteOne(ctx, filter)
 	if err != nil {
-		logrus.Error("")
+		logrus.Error(err.Error())
 		return
 	}
 	return
 }
 
 func CreateNewRecordsD(record *model.Record_D) (recordID string, err error) {
-	record.Id = primitive.NewObjectID().Hex()
 	ctx := context.TODO()
 	_, err = MongoDB.HRecordsColl.InsertOne(ctx, &record)
 	if err != nil {
@@ -73,7 +96,9 @@ func CreateNewRecordsD(record *model.Record_D) (recordID string, err error) {
 	return record.Id, nil
 }
 
-//必须有Eid，Gid可选
+//Query records_hang by Eid or
+//both Eid and Gid
+//Eid needed, Gid optional
 func QueryRecordsHByEidOrGid(Eid string, Gid ...string) (records []*model.Record_H, err error) {
 	ctx := context.TODO()
 	filter := bson.D{}
@@ -86,13 +111,15 @@ func QueryRecordsHByEidOrGid(Eid string, Gid ...string) (records []*model.Record
 
 	cursor, err := MongoDB.HRecordsColl.Find(ctx, filter)
 	if err != nil {
-		logrus.Error("")
+		logrus.Error(err.Error())
 		return
 	}
 	err = cursor.All(ctx, &records)
 	if err != nil {
-		logrus.Error("")
+		logrus.Error(err.Error())
 		return
 	}
 	return
 }
+
+//TODO: record_D 查询
