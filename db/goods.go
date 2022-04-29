@@ -11,13 +11,12 @@ import (
 )
 
 //Goods生成器
-func NewGoodsStateFormat(gid string) *model.Goods {
-	var goods *model.Goods
+func NewGoodsStateFormat(gid string) (goods *model.Goods) {
 	goods.Id = gid
 	goods.Auth = -1
 	goods.Num = -1
 	goods.Price = -1
-	return goods
+	return
 }
 
 //通过ID搜索good

@@ -7,7 +7,15 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"goodsman2.0/model"
+	"goodsman2.0/utils"
 )
+
+func NewRecordsHStateFormat(rid string) (records *model.Record_H) {
+	records.Id = rid
+	records.Num = -1
+	records.Date = utils.GetCurrentTime()
+	return
+}
 
 func CreateNewRecordsH(record *model.Record_H) (recordID string, err error) {
 	record.Id = primitive.NewObjectID().Hex()
