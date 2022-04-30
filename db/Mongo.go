@@ -18,7 +18,7 @@ func initMongo(cfg config.DBcfg) (*mongo.Database, error) {
 	clientoptions.SetConnectTimeout(2 * time.Second)
 	clientoptions.SetSocketTimeout(2 * time.Second)
 	clientoptions.SetServerSelectionTimeout(2 * time.Second)
-	clientoptions.Auth.AuthSource = "goodsman2"
+	clientoptions.Auth.AuthSource = "goodsman"
 	db, err := mongo.Connect(context.TODO(), clientoptions)
 
 	if err != nil {
