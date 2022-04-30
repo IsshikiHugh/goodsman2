@@ -248,7 +248,7 @@ func ChangeEmployeeAuth(c *gin.Context) {
 		})
 		return
 	}
-	_, err = QueryEmployeeByID(req.Eid)
+	employee, err := QueryEmployeeByID(req.Eid)
 	if err != nil {
 		logrus.Error("DB_ERROR: error happen when query employee by eid")
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -275,8 +275,14 @@ func ChangeEmployeeAuth(c *gin.Context) {
 		return
 	}
 
+	m1, _ := getDefaultMoney(req.NewAuth)
+	m2, _ := getDefaultMoney(employee.Auth)
+	delMoney := m1 - m2
+
 	newEmployeeState := NewEmployeeStateFormat(req.Eid)
 	newEmployeeState.Auth = req.NewAuth
+	newEmployeeState.Money = employee.Money + delMoney
+
 	err = UpdateEmployeeState(newEmployeeState)
 	if err != nil {
 		logrus.Error("DB_ERROR: error happen when update employee state")

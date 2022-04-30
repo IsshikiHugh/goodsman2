@@ -89,7 +89,7 @@ func DeleteRecordsHByGidAndEid(Gid string, Eid string) (err error) {
 
 func CreateNewRecordsD(record *model.Record) (recordID string, err error) {
 	ctx := context.TODO()
-	_, err = MongoDB.HRecordsColl.InsertOne(ctx, &record)
+	_, err = MongoDB.DRecordsColl.InsertOne(ctx, &record)
 	if err != nil {
 		logrus.Error("")
 		return
