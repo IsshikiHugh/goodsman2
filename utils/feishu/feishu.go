@@ -22,17 +22,18 @@ var (
 	HelloEvent = "event_callback"
 	//
 	//Feishu_API
-	getTenantAccessTokenUrl = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
-	getAppAccessTokenUrl    = "https://open.feishu.cn/open-apis/auth/v3/app_access_token/internal"
+	getTenantAccessTokenAPI = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
+	getAppAccessTokenAPI    = "https://open.feishu.cn/open-apis/auth/v3/app_access_token/internal"
+	sendMsgAPI              = "https://open.feishu.cn/open-apis/im/v1/messages"
 	GetUserIdAPI            = "https://open.feishu.cn/open-apis/mina/v2/tokenLoginValidate"
-	GetUserMsg              = "https://open.feishu.cn/open-apis/contact/v3/users/" //:user_id
+	GetUserMsgAPI           = "https://open.feishu.cn/open-apis/contact/v3/users/" //:user_id
 )
 
 func Init() {
 	//Init
 	AppID = config.App.AppID
 	AppSecret = config.App.AppSecret
-	TenantTokenManager = DefaultAccessTokenManager("tenant", getTenantAccessTokenUrl)
-	// AppTokenManager = DefaultAccessTokenManager("app", getAppAccessTokenUrl)
+	TenantTokenManager = DefaultAccessTokenManager("tenant", getTenantAccessTokenAPI)
+	// AppTokenManager = DefaultAccessTokenManager("app", getAppAccessTokenAPI)
 	CommonClient = NewClient()
 }

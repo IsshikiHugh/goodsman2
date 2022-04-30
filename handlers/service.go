@@ -35,7 +35,7 @@ func GetEmployeeFromFSByCode(code string) (userInfo model.FSUser, err error) {
 
 //Get Employee info from Feishu by Eid
 func GetUserInfoByEid(Eid string) (userInfo model.FSUser, err error) {
-	url := feishu.GetUserMsg + Eid + "?user_id_type=user_id"
+	url := feishu.GetUserMsgAPI + Eid + "?user_id_type=user_id"
 	token, err := feishu.TenantTokenManager.GetAccessToken()
 	if err != nil {
 		logrus.Error("failed to get token, ", err.Error())

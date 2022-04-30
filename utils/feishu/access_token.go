@@ -1,7 +1,3 @@
-//token管理器
-//先在缓存中找token,若没有再去飞书获取
-//并存入缓存,expireTime目前是110min
-
 package feishu
 
 import (
