@@ -1,3 +1,11 @@
+// Client Module
+//
+// Get a new client C
+// by NewClient()
+// Use C.Do(req, accesstoken) to
+// sent a request to feishu
+// - accesstoken optional
+
 package feishu
 
 import (

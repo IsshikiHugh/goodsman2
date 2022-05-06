@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"goodsman2/config"
@@ -12,13 +11,11 @@ import (
 )
 
 func initMongo(cfg config.DBcfg) (*mongo.Database, error) {
-	url := fmt.Sprintf("mongodb://%s:%s@%s:%d",
-		cfg.User, cfg.Pwd, cfg.Host, cfg.Port)
+	url := cfg.Url
 	clientoptions := options.Client().ApplyURI(url)
 	clientoptions.SetConnectTimeout(2 * time.Second)
 	clientoptions.SetSocketTimeout(2 * time.Second)
 	clientoptions.SetServerSelectionTimeout(2 * time.Second)
-	clientoptions.Auth.AuthSource = "goodsman"
 	db, err := mongo.Connect(context.TODO(), clientoptions)
 
 	if err != nil {

@@ -28,7 +28,7 @@ func Init() {
 		logrus.Fatal("failed to connect MongoDB & ", err.Error())
 	}
 	MongoDB.GoodsColl = MongoClient.Collection("goods")
-	MongoDB.EmpColl = MongoClient.Collection("employee")
+	MongoDB.EmpColl = MongoClient.Collection("employees")
 	MongoDB.HRecordsColl = MongoClient.Collection("records_hang")
 	MongoDB.DRecordsColl = MongoClient.Collection("records_done")
 

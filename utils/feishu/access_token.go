@@ -1,3 +1,14 @@
+// Access token module
+//
+// Use DefaultAccessTokenManager(tokentype, url)
+// to generate a token manager.
+// - Tokentype is the only mark
+// - to distinguish different tokens.
+// - Url is the api to get new token.
+//
+// After you have a manager M,
+// use M.GetAccessToken() to get new token
+
 package feishu
 
 import (

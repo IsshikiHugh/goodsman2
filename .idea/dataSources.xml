@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="goodsman2@124.221.92.18" uuid="75e21bf0-b666-438e-9664-5455a51621ec">
+      <driver-ref>mongo</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.dbschema.MongoJdbcDriver</jdbc-driver>
+      <jdbc-url>mongodb://124.221.92.18:27116,124.221.92.18:27117/goodsman2?tls=false&amp;readPreference=secondaryPreferred&amp;authSource=goodsman2&amp;replicaSet=goodsman2</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+  </component>
+</project>

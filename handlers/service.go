@@ -21,8 +21,7 @@ func Ping(c *gin.Context) {
 	})
 }
 
-/////////////////////////
-//User ID Module
+//////////  User ID Module  ///////////
 
 //Get Employee info from Feishu by login code
 func GetEmployeeFromFSByCode(code string) (userInfo model.FSUser, err error) {
@@ -89,3 +88,39 @@ func getUserIdFromCode(code string) (employee_id string, err error) {
 }
 
 //////////////////////
+
+///////// ReplyEvent Handler  /////////
+
+type ReplyEventContent struct {
+	Event struct {
+		Sender struct {
+			SenderId struct {
+				UserID string `json:"user_id"`
+			} `json:"sender_id"`
+		} `json:"sender"`
+		Message struct {
+			Content string `json:"content"`
+		} `json:"message"`
+	} `json:"event"`
+}
+
+func Receive_msg(body []byte) {
+	content := ReplyEventContent{}
+	err := json.Unmarshal(body, &content)
+	if err != nil {
+		logrus.Error("failed unmarshal event body")
+		return
+	}
+
+	m := feishu.NewPost()
+	m.ZH.NewLine()
+	m.ZH.AppendItem(m.NewText("欢迎使用物资管理Bot"))
+	err = feishu.SendMessage(content.Event.Sender.SenderId.UserID, feishu.POST_MSG, m)
+	if err != nil {
+		logrus.Error("failed to send msg to user")
+		return
+	}
+	logrus.Info("Succeed to send a msg")
+}
+
+///////////////////////////////////////

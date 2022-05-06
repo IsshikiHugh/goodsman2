@@ -5,15 +5,13 @@ type Basecfg struct {
 }
 
 type Appcfg struct {
-	AppID     string
-	AppSecret string
+	AppID      string
+	AppSecret  string
+	EncryptKey string
 }
 
 type DBcfg struct {
-	User   string
-	Pwd    string
-	Host   string
-	Port   int
+	Url string
 	DBName string
 }
 

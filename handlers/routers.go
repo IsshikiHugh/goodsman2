@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
+	"goodsman2/utils/feishu"
 )
 
 // auth level
@@ -21,6 +22,10 @@ var (
 )
 
 func InitRouter() *gin.Engine {
+	//feishu event router
+	fr := feishu.NewEventGroup()
+	fr.Register(feishu.ReplyEvent, Receive_msg)
+
 	r := gin.Default()
 	r.GET("/ping", Ping)
 	apiGroup := r.Group("/api")
@@ -44,9 +49,9 @@ func InitRouter() *gin.Engine {
 
 		apiGroup.POST("/records/close", CloseCertainRecordsH)
 	}
-	// eventGroup := r.Group("/event")
-	// {
-	// 	eventGroup.POST("/received/msg", handlers.ReplyCheck)
-	// }
+	eventGroup := r.Group("/event")
+	{
+		eventGroup.POST("/received/msg", fr.EventListener)
+	}
 	return r
 }

@@ -1,10 +1,11 @@
 package feishu
 
-import "goodsman2/config"
+import (
+	"goodsman2/config"
+)
 
 var (
 	//manager and client
-	// AppTokenManager    *CommonAccessTokenManager
 	TenantTokenManager *CommonAccessTokenManager
 	CommonClient       *FeishuClient
 	//
@@ -19,7 +20,7 @@ var (
 	//
 	//event
 	ReplyEvent = "im.message.receive_v1"
-	HelloEvent = "event_callback"
+	HelloEvent = ""
 	//
 	//Feishu_API
 	getTenantAccessTokenAPI = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
@@ -34,6 +35,5 @@ func Init() {
 	AppID = config.App.AppID
 	AppSecret = config.App.AppSecret
 	TenantTokenManager = DefaultAccessTokenManager("tenant", getTenantAccessTokenAPI)
-	// AppTokenManager = DefaultAccessTokenManager("app", getAppAccessTokenAPI)
 	CommonClient = NewClient()
 }

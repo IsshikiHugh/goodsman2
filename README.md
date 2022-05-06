@@ -3,6 +3,7 @@
 
 - Please create `{repo}/config.yml` according model below.
 
+- Set EncryptKey `""` if you do not need secure verification
 
 ``` yml
 Base:
@@ -11,11 +12,9 @@ Base:
 App:
   AppID: "{Set your app id here.}"
   AppSecret: "{Set your app password here.}"
+  EncryptKey: "{Set your encrypt key here}"
 
 Mongo: 
   DBName: "goodsman2"
-  User: "admin"
-  Pwd: "{Set your db password here.}" 
-  Host: "localhost"
-  Port: 27017
+  Url: "{Set your DB connect url}"
 ```
