@@ -227,6 +227,7 @@ func GetCertainGoodsBriefInfoList(c *gin.Context) {
 	}
 	resp := []model.BriefGoodsListResp{}
 	for idx, info := range goodsList {
+		//TODO: FATAL!
 		resp[idx] = model.BriefGoodsListResp{
 			Id:   info.Id,
 			Name: info.Name,

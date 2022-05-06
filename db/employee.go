@@ -72,7 +72,7 @@ func QueryAllEmployeeByName(name ...string) (employees []*model.Employee, err er
 		filter = bson.M{
 			"name": bson.M{
 				"$regex": primitive.Regex{
-					Pattern: "*" + name[0] + "*",
+					Pattern: "(.*)(" + name[0] + ")(.*)",
 					Options: "i"}}}
 	}
 

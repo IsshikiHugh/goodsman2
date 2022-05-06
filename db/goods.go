@@ -47,7 +47,7 @@ func QueryAllGoodsByName(name ...string) (goods []*model.Goods, err error) {
 		filter = bson.M{
 			"name": bson.M{
 				"$regex": primitive.Regex{
-					Pattern: "*" + name[0] + "*",
+					Pattern: "(.*)(" + name[0] + ")(.*)",
 					Options: "i"}}}
 	}
 
