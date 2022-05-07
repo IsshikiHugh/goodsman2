@@ -226,14 +226,14 @@ func GetCertainGoodsBriefInfoList(c *gin.Context) {
 		return
 	}
 	resp := []model.BriefGoodsListResp{}
-	for idx, info := range goodsList {
+	for _, info := range goodsList {
 		//TODO: FATAL!
-		resp[idx] = model.BriefGoodsListResp{
+		resp = append(resp, model.BriefGoodsListResp{
 			Id:   info.Id,
 			Name: info.Name,
 			Lore: info.Lore,
 			Num:  info.Num,
-		}
+		})
 	}
 	respZip, _ := utils.GetZippedData(resp)
 	logrus.Info("OK")
