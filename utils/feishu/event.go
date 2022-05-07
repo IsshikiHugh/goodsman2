@@ -72,14 +72,14 @@ func (slf EventRouterGroup) EventListener(c *gin.Context) {
 		Data string `json:"encrypt"`
 	}
 	err := json.Unmarshal(body, &encryptData)
-	if err == nil {
+	if err == nil && encryptData.Data != "" {
 		if c.Request.Header.Get("X-Lark-Signature") != encryptData.Data {
-			logrus.Error()
+			logrus.Error("X-Lark-Signature & body do not match ")
 			return
 		}
 		body, err = decrypt(encryptData.Data, config.App.EncryptKey)
 		if err != nil {
-			logrus.Error()
+			logrus.Error("decrypt err: ", err.Error())
 			return
 		}
 	}
@@ -87,16 +87,16 @@ func (slf EventRouterGroup) EventListener(c *gin.Context) {
 	var commenEvent CommonEvent_V2
 	err = json.Unmarshal(body, &commenEvent)
 	if err != nil {
-		logrus.Error()
+		logrus.Error(err.Error())
 		return
 	}
-	if commenEvent.Clg != "" && commenEvent.Header.EventType == "url_verification" {
+	if commenEvent.Clg != "" && commenEvent.Type == "url_verification" {
 		clgResp := struct {
 			Clg string `json:"challenge"`
 		}{
 			Clg: commenEvent.Clg,
 		}
-		logrus.Info()
+		logrus.Info("Challenge has been replied")
 		c.JSON(http.StatusOK, &clgResp)
 		return
 	}

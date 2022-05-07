@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
+	"errors"
 	"io"
+	"reflect"
 	"time"
 
 	"github.com/gofrs/uuid"
@@ -26,9 +28,23 @@ func GetCurrentTime() string {
 /////////////////
 // gzip module
 
-//Zip data
-func GetZippedData(data interface{}) (zipdata []byte, err error) {
-	cont, err := json.Marshal(data)
+// Zip data
+func GetZippedData(originData interface{}) (zipdata []byte, err error) {
+	var data []interface{}
+	trs := reflect.ValueOf(originData)
+	for i := 0; i < trs.Len(); i++ {
+		data = append(data, trs.Index(i).Interface())
+	}
+
+	var cont []byte
+	if len(data) <= 0 {
+		return nil, errors.New("missing origin data")
+	} else if len(data) <= 1 {
+		cont, err = json.Marshal(data[0])
+	} else {
+		cont, err = json.Marshal(data)
+	}
+
 	if err != nil {
 		logrus.Error("failed to marshal data, err: ", err.Error())
 		return
