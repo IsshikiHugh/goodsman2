@@ -117,7 +117,7 @@ func Receive_msg(body []byte) {
 	m.ZH.AppendItem(m.NewText("欢迎使用物资管理Bot"))
 	err = feishu.SendMessage(content.Event.Sender.SenderId.UserID, feishu.POST_MSG, m)
 	if err != nil {
-		logrus.Error("failed to send msg to user")
+		logrus.Error("failed to send msg to user ", content.Event.Sender.SenderId)
 		return
 	}
 	logrus.Info("Succeed to send a msg")
