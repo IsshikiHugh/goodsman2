@@ -7,9 +7,10 @@
 // Simple Example
 //
 // m := NewPost()
-// m.ZH.SetTitle("example")
-// m.ZH.NewLine()
-// m.ZH.AppendItem(m.NewText("qwq"))
+// z := m.ZhContetn()
+// z.SetTitle("example")
+// z.NewLine()
+// z.AppendItem(z.NewText("qwq"))
 // SendMessage(empID, POST_MSG, m)
 
 package feishu
@@ -73,14 +74,35 @@ func (slf *TextMsg) returnMsg() string {
 /////// post //////
 
 type PostBody struct {
-	ZH Section `json:"zh_cn,omitempty"`
-	EN Section `json:"en_us,omitempty"`
-	JA Section `json:"ja_jp,omitempty"`
+	ZH *Section `json:"zh_cn,omitempty"`
+	EN *Section `json:"en_us,omitempty"`
+	JA *Section `json:"ja_jp,omitempty"`
 }
 
 //Generate a new post msg
 func NewPost() *PostBody {
 	return &PostBody{}
+}
+
+func (slf *PostBody) ZhContetn() *Section {
+	if slf.ZH == nil {
+		slf.ZH = new(Section)
+	}
+	return slf.ZH
+}
+
+func (slf *PostBody) EnContetn() *Section {
+	if slf.EN == nil {
+		slf.EN = new(Section)
+	}
+	return slf.EN
+}
+
+func (slf *PostBody) JaContetn() *Section {
+	if slf.JA == nil {
+		slf.JA = new(Section)
+	}
+	return slf.JA
 }
 
 type Section struct {
@@ -100,6 +122,9 @@ func (slf *Section) NewLine() {
 
 //Add a new item in last line
 func (slf *Section) AppendItem(item PostItem) {
+	if slf == nil {
+		slf = &Section{}
+	}
 	slf.Content[len(slf.Content)-1] = append(slf.Content[len(slf.Content)-1], item)
 }
 
@@ -113,7 +138,7 @@ type PostText struct {
 }
 
 //Generate a new text msg item
-func (slf *PostBody) NewText(text string) PostText {
+func (slf *Section) NewText(text string) PostText {
 	return PostText{
 		Tag:  "text",
 		Text: text,
@@ -127,7 +152,7 @@ type PostA struct {
 }
 
 //Generate a new </a> item
-func (slf *PostBody) NewA(text string, href string) PostA {
+func (slf *Section) NewA(text string, href string) PostA {
 	return PostA{
 		Tag:  "a",
 		Href: href,
@@ -142,7 +167,7 @@ type PostAT struct {
 }
 
 //Generate a new @ item
-func (slf *PostBody) NewAT(userID string, userName string) PostAT {
+func (slf *Section) NewAT(userID string, userName string) PostAT {
 	return PostAT{
 		Tag:      "at",
 		UserID:   userID,
