@@ -59,13 +59,13 @@ func NewEventGroup() *EventRouterGroup {
 	return &EventRouterGroup{}
 }
 
-func (slf EventRouterGroup) Register(event_type string, handlerFunc EventHandlerfunc) *EventRouterGroup {
-	list := slf[event_type]
-	list = append(list, handlerFunc)
-	return &slf
+func (slf *EventRouterGroup) Register(event_type string, handlerFunc EventHandlerfunc) *EventRouterGroup {
+	list := (*slf)[event_type]
+	(*slf)[event_type] = append(list, handlerFunc)
+	return slf
 }
 
-func (slf EventRouterGroup) EventListener(c *gin.Context) {
+func (slf *EventRouterGroup) EventListener(c *gin.Context) {
 	body, _ := ioutil.ReadAll(c.Request.Body)
 
 	var encryptData struct {
@@ -101,7 +101,7 @@ func (slf EventRouterGroup) EventListener(c *gin.Context) {
 		return
 	}
 
-	for _, singlevent := range slf[commenEvent.Header.EventType] {
+	for _, singlevent := range (*slf)[commenEvent.Header.EventType] {
 		go singlevent(body)
 	}
 	return
