@@ -6,12 +6,10 @@ import (
 	"errors"
 	"net/http"
 
-	. "goodsman2/db"
-	"goodsman2/model"
-	"goodsman2/utils"
-
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	. "goodsman2/db"
+	"goodsman2/model"
 )
 
 // Be used to deal code given by frontend and judge whether
@@ -19,7 +17,10 @@ import (
 // If not, insert the employee into db and initialize it.
 func EmployeeLogin(c *gin.Context) {
 	code := c.DefaultQuery("code", "")
-	if code == "" {
+	content := struct {
+		Code string `json:"code" binding:"required"`
+	}{}
+	if err := c.BindJSON(&content); err != nil {
 		logrus.Error("INVALID_PARAMS: code not found")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     "INVALID_PARAMS",
@@ -27,6 +28,8 @@ func EmployeeLogin(c *gin.Context) {
 		})
 		return
 	}
+	code = content.Code
+
 	employee, err := GetEmployeeFromFSByCode(code)
 	if err != nil {
 		logrus.Error("FEISHU_ERROR: cannot get employee info by feishu code")
@@ -72,7 +75,7 @@ func EmployeeLogin(c *gin.Context) {
 
 	logrus.Info("OK")
 	c.JSON(http.StatusBadRequest, gin.H{
-		"err":      "NULL",
+		"err":      "",
 		"employee": resp,
 	})
 	return
@@ -100,7 +103,7 @@ func GetEmployeeInfo(c *gin.Context) {
 	}
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err":      "NULL",
+		"err":      "null",
 		"employee": employee,
 	})
 	return
@@ -124,19 +127,19 @@ func GetCertainEmployeeList(c *gin.Context) {
 		return
 	}
 	resp := []model.Employee{}
-	for idx, info := range employeeList {
-		resp[idx] = model.Employee{
+	for _, info := range employeeList {
+		resp = append(resp, model.Employee{
 			Id:    info.Id,
 			Name:  info.Name,
 			Auth:  info.Auth,
 			Money: info.Money,
-		}
+		})
 	}
-	respZip, _ := utils.GetZippedData(resp)
+	//respZip, _ := utils.GetZippedData(resp)
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err":            "NULL",
-		"employees_list": respZip,
+		"err":            "null",
+		"employees_list": &resp,
 	})
 	return
 }
@@ -163,7 +166,7 @@ func GetRecordsHangOfCertainEmployee(c *gin.Context) {
 
 	logrus.Info("OK")
 	c.JSON(http.StatusBadRequest, gin.H{
-		"err":          "NULL",
+		"err":          "null",
 		"records_list": records,
 	})
 	return
@@ -222,7 +225,7 @@ func ChangeEmployeeMoney(c *gin.Context) {
 	}
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err": "NULL",
+		"err": "null",
 	})
 	return
 }
@@ -295,7 +298,7 @@ func ChangeEmployeeAuth(c *gin.Context) {
 
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err": "NULL",
+		"err": "null",
 	})
 	return
 }

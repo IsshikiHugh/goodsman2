@@ -14,7 +14,7 @@ var (
 
 // err type
 var (
-	NULL              string = "NULL"
+	NULL              string = "null"
 	INVALID_PARAMS    string = "INVALID_PARAMS"
 	DB_ERROR          string = "DB_ERROR"
 	CONDITION_NOT_MET string = "CONDITION_NOT_MET"

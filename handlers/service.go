@@ -16,7 +16,7 @@ import (
 // Be used to check whether the service is online.
 func Ping(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
-		"err":  "NULL",
+		"err":  "",
 		"data": "Pong!",
 	})
 }
