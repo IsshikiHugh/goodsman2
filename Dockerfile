@@ -1,6 +1,6 @@
 FROM golang:1.17 AS builder
 
-ENV GOPROXY=https://goproxy.cn,direct \
+ENV GOPROXY=https://mirrors.aliyun.com/goproxy/,direct \
     GO111MODULE=on \
     WORKDIR=/tmp/src/ \
     CGO_ENABLED=0
