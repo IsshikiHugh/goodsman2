@@ -21,7 +21,7 @@ func CloseCertainRecordsH(c *gin.Context) {
 		logrus.Error("INVALID_PARAMS: ", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     "INVALID_PARAMS",
-			"err_msg": err,
+			"err_msg": err.Error(),
 		})
 		return
 	}
@@ -49,7 +49,7 @@ func CloseCertainRecordsH(c *gin.Context) {
 		logrus.Error("DB_ERROR: ", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     "DB_ERROR",
-			"err_msg": err,
+			"err_msg": err.Error(),
 		})
 		return
 	}

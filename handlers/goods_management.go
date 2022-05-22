@@ -51,7 +51,7 @@ func BorrowGoods(c *gin.Context) {
 		logrus.Error("INVALID_PARAMS: ", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     "INVALID_PARAMS",
-			"err_msg": err,
+			"err_msg": err.Error(),
 		})
 		return
 	}
@@ -95,7 +95,7 @@ func BorrowGoods(c *gin.Context) {
 		logrus.Error("DB_ERROR: ", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     "DB_ERROR",
-			"err_msg": err,
+			"err_msg": err.Error(),
 		})
 		return
 	}
@@ -117,7 +117,7 @@ func ReturnGoods(c *gin.Context) {
 		logrus.Error("INVALID_PARAMS: ", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     "INVALID_PARAMS",
-			"err_msg": err,
+			"err_msg": err.Error(),
 		})
 		return
 	}
@@ -175,7 +175,7 @@ func ReturnGoods(c *gin.Context) {
 	newGoodsState := NewGoodsStateFormat(req.Gid)
 	newGoodsState.Num = g.Num + req.Num
 	// TODO: ???
-	if req.Msg != "null" {
+	if req.Msg != "NULL" {
 		newGoodsState.Msg = req.Msg
 	}
 	err = UpdateGoodsState(newGoodsState)
@@ -252,7 +252,7 @@ func AddNewGoods(c *gin.Context) {
 		logrus.Error("INVALID_PARAMS: ", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     "INVALID_PARAMS",
-			"err_msg": err,
+			"err_msg": err.Error(),
 		})
 		return
 	}
@@ -298,7 +298,7 @@ func ChangeGoodsNumber(c *gin.Context) {
 		logrus.Error("INVALID_PARAMS: ", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     "INVALID_PARAMS",
-			"err_msg": err,
+			"err_msg": err.Error(),
 		})
 		return
 	}
@@ -325,7 +325,7 @@ func ChangeGoodsNumber(c *gin.Context) {
 		logrus.Error(errT, ": ", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     errT,
-			"err_msg": err,
+			"err_msg": err.Error(),
 		})
 		return
 	}
@@ -346,7 +346,7 @@ func ChangeGoodsPrice(c *gin.Context) {
 		logrus.Error("INVALID_PARAMS: ", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     "INVALID_PARAMS",
-			"err_msg": err,
+			"err_msg": err.Error(),
 		})
 		return
 	}
@@ -373,7 +373,7 @@ func ChangeGoodsPrice(c *gin.Context) {
 		logrus.Error(errT, ": ", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     errT,
-			"err_msg": err,
+			"err_msg": err.Error(),
 		})
 		return
 	}
