@@ -75,7 +75,7 @@ func EmployeeLogin(c *gin.Context) {
 	resp, _ := QueryEmployeeByID(employee.Data.User.Eid)
 
 	logrus.Info("OK")
-	c.JSON(http.StatusBadRequest, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"err":      "",
 		"employee": resp,
 	})
