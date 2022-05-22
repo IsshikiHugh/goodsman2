@@ -52,6 +52,9 @@ func GetUserInfoByEid(Eid string) (userInfo model.FSUser, err error) {
 		logrus.Error("json unmashall error ", err.Error())
 		return
 	}
+	if userInfo.Data.User.Eid == "" {
+		userInfo.Data.User.Eid = Eid
+	}
 	return
 }
 
