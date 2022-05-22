@@ -5,6 +5,7 @@ package handlers
 import (
 	"errors"
 	"net/http"
+	"strconv"
 
 	. "goodsman2/db"
 	"goodsman2/model"
@@ -308,7 +309,7 @@ func getDefaultMoney(auth int) (float64, error) {
 	if !(AuthEmplo <= auth && auth <= AuthSuper) {
 		return 0, errors.New("invalid auth")
 	}
-	default_id := "default_group_" + string(AuthEmplo)
+	default_id := "default_group_" + strconv.Itoa(AuthEmplo)
 	edg, err := QueryEmployeeByID(default_id)
 	if err != nil {
 		logrus.Fatal("can't query default group : ", default_id)
