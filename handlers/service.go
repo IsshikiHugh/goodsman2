@@ -81,13 +81,15 @@ func getUserIdFromCode(code string) (employee_id string, err error) {
 	}
 
 	getIDResp := struct {
-		EmpID string `json:"employee_id"`
+		Data struct {
+			EmpID string `json:"employee_id"`
+		} `json:"data"`
 	}{}
 	if err = json.Unmarshal(resp, &getIDResp); err != nil {
 		logrus.Error("json unmashall error ", err.Error())
 		return
 	}
-	return getIDResp.EmpID, nil
+	return getIDResp.Data.EmpID, nil
 }
 
 //////////////////////
