@@ -6,10 +6,11 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	. "goodsman2/db"
 	"goodsman2/model"
+
+	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 // Be used to deal code given by frontend and judge whether
@@ -307,9 +308,10 @@ func getDefaultMoney(auth int) (float64, error) {
 	if !(AuthEmplo <= auth && auth <= AuthSuper) {
 		return 0, errors.New("invalid auth")
 	}
-	edg, err := QueryEmployeeByID("default_group_" + string(AuthEmplo))
+	default_id := "default_group_" + string(AuthEmplo)
+	edg, err := QueryEmployeeByID(default_id)
 	if err != nil {
-		logrus.Fatal("can't query default group !!!!")
+		logrus.Fatal("can't query default group : ", default_id)
 	}
 	return edg.Money, nil
 }
