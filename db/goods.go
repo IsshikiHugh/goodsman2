@@ -13,11 +13,12 @@ import (
 
 //Goods生成器
 func NewGoodsStateFormat(gid string) (goods *model.Goods) {
-	goods.Id = gid
-	goods.Auth = -1
-	goods.Num = -1
-	goods.Price = -1
-	return
+	return &model.Goods{
+		Id:    gid,
+		Auth:  -1,
+		Num:   -1,
+		Price: -1,
+	}
 }
 
 //Query goods by Gid

@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 	"errors"
-
 	"goodsman2/model"
 	"goodsman2/utils"
 
@@ -13,10 +12,11 @@ import (
 
 //Generate a new records_hang
 func NewRecordStateFormat(rid string) (records *model.Record) {
-	records.Id = rid
-	records.Num = -1
-	records.Date = utils.GetCurrentTime()
-	return
+	return &model.Record{
+		Id:   rid,
+		Num:  -1,
+		Date: utils.GetCurrentTime(),
+	}
 }
 
 //Insert a records_hang into db

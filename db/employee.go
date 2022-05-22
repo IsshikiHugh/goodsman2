@@ -13,10 +13,11 @@ import (
 
 //Generate a new employee
 func NewEmployeeStateFormat(Eid string) (employee *model.Employee) {
-	employee.Id = Eid
-	employee.Auth = -1
-	employee.Money = -1
-	return
+	return &model.Employee{
+		Id:    Eid,
+		Auth:  -1,
+		Money: -1,
+	}
 }
 
 //Update Employee state
