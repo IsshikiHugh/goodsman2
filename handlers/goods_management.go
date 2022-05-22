@@ -36,7 +36,7 @@ func GetGoodsInfo(c *gin.Context) {
 	}
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err":   "null",
+		"err":   "",
 		"goods": goods,
 	})
 	return
@@ -102,7 +102,7 @@ func BorrowGoods(c *gin.Context) {
 
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err": "null",
+		"err": "",
 	})
 	return
 }
@@ -110,7 +110,7 @@ func BorrowGoods(c *gin.Context) {
 // Be used to accomplish 'return' action
 // from employee indexed by eid
 // about goods indexed by gid and described by number of borrowed goods.
-// The goods's msg will be updated if msg isn't "null".
+// The goods's msg will be updated if msg isn't "".
 func ReturnGoods(c *gin.Context) {
 	var req model.ReturnGoodsReq
 	if err := c.Bind(&req); err != nil {
@@ -174,8 +174,7 @@ func ReturnGoods(c *gin.Context) {
 	g, err := QueryGoodsByID(req.Gid)
 	newGoodsState := NewGoodsStateFormat(req.Gid)
 	newGoodsState.Num = g.Num + req.Num
-	// TODO: ???
-	if req.Msg != "null" {
+	if req.Msg != "NULL" {
 		newGoodsState.Msg = req.Msg
 	}
 	err = UpdateGoodsState(newGoodsState)
@@ -204,7 +203,7 @@ func ReturnGoods(c *gin.Context) {
 
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err": "null",
+		"err": "",
 	})
 	return
 }
@@ -238,7 +237,7 @@ func GetCertainGoodsBriefInfoList(c *gin.Context) {
 	//respZip, _ := utils.GetZippedData(resp)
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err":        "null",
+		"err":        "",
 		"goods_list": &resp,
 	})
 	return
@@ -284,7 +283,7 @@ func AddNewGoods(c *gin.Context) {
 	}
 	logrus.Info("Create goods with gid: ", gid)
 	c.JSON(http.StatusOK, gin.H{
-		"err": "null",
+		"err": "",
 		"gid": gid,
 	})
 	return
@@ -331,7 +330,7 @@ func ChangeGoodsNumber(c *gin.Context) {
 	}
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err": "null",
+		"err": "",
 	})
 	return
 }
@@ -379,7 +378,7 @@ func ChangeGoodsPrice(c *gin.Context) {
 	}
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err": "null",
+		"err": "",
 	})
 	return
 }
