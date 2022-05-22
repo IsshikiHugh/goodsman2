@@ -55,7 +55,7 @@ func CloseCertainRecordsH(c *gin.Context) {
 	}
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err": "null",
+		"err": "",
 	})
 	return
 }
