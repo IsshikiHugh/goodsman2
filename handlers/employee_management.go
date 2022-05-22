@@ -43,18 +43,7 @@ func EmployeeLogin(c *gin.Context) {
 	}
 
 	_, err = QueryEmployeeByID(employee.Data.User.Eid)
-	if err == nil {
-		newEmployeeState := NewEmployeeStateFormat(employee.Data.User.Eid)
-		err = UpdateEmployeeState(newEmployeeState)
-		if err != nil {
-			logrus.Error("DB_ERROR: error happen when update employee")
-			c.JSON(http.StatusBadRequest, gin.H{
-				"err":     "DB_ERROR",
-				"err_msg": "error happen when update employee",
-			})
-			return
-		}
-	} else {
+	if err != nil {
 		defaultMoney, _ := getDefaultMoney(AuthEmplo)
 		newEmployee := model.Employee{
 			Id:    employee.Data.User.Eid,
