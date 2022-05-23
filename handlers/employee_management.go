@@ -94,7 +94,7 @@ func GetEmployeeInfo(c *gin.Context) {
 	}
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err":      "null",
+		"err":      "",
 		"employee": employee,
 	})
 	return
@@ -129,7 +129,7 @@ func GetCertainEmployeeList(c *gin.Context) {
 	//respZip, _ := utils.GetZippedData(resp)
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err":            "null",
+		"err":            "",
 		"employees_list": &resp,
 	})
 	return
@@ -157,7 +157,7 @@ func GetRecordsHangOfCertainEmployee(c *gin.Context) {
 
 	logrus.Info("OK")
 	c.JSON(http.StatusBadRequest, gin.H{
-		"err":          "null",
+		"err":          "",
 		"records_list": records,
 	})
 	return
@@ -216,7 +216,7 @@ func ChangeEmployeeMoney(c *gin.Context) {
 	}
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err": "null",
+		"err": "",
 	})
 	return
 }
@@ -289,7 +289,7 @@ func ChangeEmployeeAuth(c *gin.Context) {
 
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err": "null",
+		"err": "",
 	})
 	return
 }

@@ -49,6 +49,7 @@ func UpdateRecordsH(record *model.Record) (err error) {
 	if record.Num >= 0 {
 		update = append(update, bson.E{"num", record.Num})
 	}
+	update = bson.D{{"$set", update}}
 
 	result, err := MongoDB.HRecordsColl.UpdateOne(ctx, filter, update)
 	if err != nil {
