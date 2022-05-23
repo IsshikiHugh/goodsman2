@@ -82,6 +82,14 @@ func BorrowGoods(c *gin.Context) {
 		})
 		return
 	}
+	if goods.Num < req.Num {
+		logrus.Error("CONDITION_NOT_MET: num insufficient", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "CONDITION_NOT_MET",
+			"err_msg": "num insufficient",
+		})
+		return
+	}
 	if goods.Auth > employee.Auth {
 		logrus.Error("CONDITION_NOT_MET: auth insufficient", err)
 		c.JSON(http.StatusBadRequest, gin.H{
