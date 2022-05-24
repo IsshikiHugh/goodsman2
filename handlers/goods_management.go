@@ -47,7 +47,7 @@ func GetGoodsInfo(c *gin.Context) {
 // about goods indexed by gid and described by number of borrowed goods.
 func BorrowGoods(c *gin.Context) {
 	var req model.BorrowGoodsReq
-	if err := c.Bind(&req); err != nil {
+	if err := c.BindJSON(&req); err != nil {
 		logrus.Error("INVALID_PARAMS: ", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err":     "INVALID_PARAMS",
@@ -82,6 +82,14 @@ func BorrowGoods(c *gin.Context) {
 		})
 		return
 	}
+	if goods.Num < req.Num {
+		logrus.Error("CONDITION_NOT_MET: num insufficient", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err":     "CONDITION_NOT_MET",
+			"err_msg": "num insufficient",
+		})
+		return
+	}
 	if goods.Auth > employee.Auth {
 		logrus.Error("CONDITION_NOT_MET: auth insufficient", err)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -90,7 +98,7 @@ func BorrowGoods(c *gin.Context) {
 		})
 		return
 	}
-	err = employeeBorrowGoods(employee, goods, req.Num)
+	err = employeeBorrowGoods(employee, goods, req.Num, req.Msg)
 	if err != nil {
 		logrus.Error("DB_ERROR: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -383,9 +391,12 @@ func ChangeGoodsPrice(c *gin.Context) {
 	return
 }
 
-func employeeBorrowGoods(e *model.Employee, g *model.Goods, gn int) error {
+func employeeBorrowGoods(e *model.Employee, g *model.Goods, gn int, gmsg string) error {
 	newGoodsState := NewGoodsStateFormat(g.Id)
 	newGoodsState.Num = g.Num - gn
+	if gmsg != "NULL" {
+		newGoodsState.Msg = gmsg
+	}
 	err := UpdateGoodsState(newGoodsState)
 	if err != nil {
 		return errors.New("error happen when update goods state")
@@ -398,6 +409,19 @@ func employeeBorrowGoods(e *model.Employee, g *model.Goods, gn int) error {
 		return errors.New("error happen when update employee state")
 	}
 
+	oldRecords, err := QueryRecordsHByEidOrGid(e.Id, g.Id)
+	if err != nil {
+		return errors.New("error happen when query old record")
+	} else if len(oldRecords) > 0 {
+		newRecords := NewRecordStateFormat(oldRecords[0].Id)
+		newRecords.Num = oldRecords[0].Num + gn
+		newRecords.Date = utils.GetCurrentTime()
+		err = UpdateRecordsH(newRecords)
+		if err != nil {
+			return errors.New("error happen when update borrow records")
+		}
+		return nil
+	}
 	newRecords := &model.Record{
 		Id:   utils.GenerateUID(),
 		Eid:  e.Id,
