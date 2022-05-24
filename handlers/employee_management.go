@@ -35,7 +35,7 @@ func EmployeeLogin(c *gin.Context) {
 	employee, err := GetEmployeeFromFSByCode(code)
 	if err != nil {
 		logrus.Error("FEISHU_ERROR: cannot get employee info by feishu code")
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"err":     "FEISHU_ERROR",
 			"err_msg": "cannot get employee info by feishu code",
 		})
@@ -54,7 +54,7 @@ func EmployeeLogin(c *gin.Context) {
 		err = CreateNewEmployee(&newEmployee)
 		if err != nil {
 			logrus.Error("DB_ERROR: error happen when create new employee")
-			c.JSON(http.StatusBadRequest, gin.H{
+			c.JSON(http.StatusInternalServerError, gin.H{
 				"err":     "DB_ERROR",
 				"err_msg": "error happen when create employee",
 			})
@@ -86,7 +86,7 @@ func GetEmployeeInfo(c *gin.Context) {
 	employee, err := QueryEmployeeByID(eid)
 	if err != nil {
 		logrus.Error("DB_ERROR: ", err)
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"err":     "DB_ERROR",
 			"err_msg": "error happen when query employee by eid",
 		})
@@ -94,7 +94,7 @@ func GetEmployeeInfo(c *gin.Context) {
 	}
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err":      "null",
+		"err":      "",
 		"employee": employee,
 	})
 	return
@@ -111,7 +111,7 @@ func GetCertainEmployeeList(c *gin.Context) {
 	employeeList, err := QueryAllEmployeeByName(subStr)
 	if err != nil {
 		logrus.Error("DB_ERROR: error happen when query employee list")
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"err":     "DB_ERROR",
 			"err_msg": "error happen when query employee list",
 		})
@@ -129,7 +129,7 @@ func GetCertainEmployeeList(c *gin.Context) {
 	//respZip, _ := utils.GetZippedData(resp)
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err":            "null",
+		"err":            "",
 		"employees_list": &resp,
 	})
 	return
@@ -148,7 +148,7 @@ func GetRecordsHangOfCertainEmployee(c *gin.Context) {
 	records, err := QueryRecordsHByEidOrGid(eid)
 	if err != nil {
 		logrus.Error("DB_ERROR: error happen when query records with eid")
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"err":     "DB_ERROR",
 			"err_msg": "error happen when query records with eid",
 		})
@@ -156,8 +156,8 @@ func GetRecordsHangOfCertainEmployee(c *gin.Context) {
 	}
 
 	logrus.Info("OK")
-	c.JSON(http.StatusBadRequest, gin.H{
-		"err":          "null",
+	c.JSON(http.StatusOK, gin.H{
+		"err":          "",
 		"records_list": records,
 	})
 	return
@@ -179,7 +179,7 @@ func ChangeEmployeeMoney(c *gin.Context) {
 	admin, err := QueryEmployeeByID(req.Aid)
 	if err != nil {
 		logrus.Error("DB_ERROR: error happen when query employee by aid")
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"err":     "DB_ERROR",
 			"err_msg": "error happen when query employee by aid",
 		})
@@ -188,7 +188,7 @@ func ChangeEmployeeMoney(c *gin.Context) {
 	employee, err := QueryEmployeeByID(req.Eid)
 	if err != nil {
 		logrus.Error("DB_ERROR: error happen when query employee by eid")
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"err":     "DB_ERROR",
 			"err_msg": "error happen when query employee by eid",
 		})
@@ -208,7 +208,7 @@ func ChangeEmployeeMoney(c *gin.Context) {
 	err = UpdateEmployeeState(newEmployeeState)
 	if err != nil {
 		logrus.Error("DB_ERROR: error happen when update employee state")
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"err":     "DB_ERROR",
 			"err_msg": "error happen when update employee state",
 		})
@@ -216,7 +216,7 @@ func ChangeEmployeeMoney(c *gin.Context) {
 	}
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err": "null",
+		"err": "",
 	})
 	return
 }
@@ -236,7 +236,7 @@ func ChangeEmployeeAuth(c *gin.Context) {
 	admin, err := QueryEmployeeByID(req.Aid)
 	if err != nil {
 		logrus.Error("DB_ERROR: error happen when query employee by aid")
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"err":     "DB_ERROR",
 			"err_msg": "error happen when query employee by aid",
 		})
@@ -245,7 +245,7 @@ func ChangeEmployeeAuth(c *gin.Context) {
 	employee, err := QueryEmployeeByID(req.Eid)
 	if err != nil {
 		logrus.Error("DB_ERROR: error happen when query employee by eid")
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"err":     "DB_ERROR",
 			"err_msg": "error happen when query employee by eid",
 		})
@@ -280,7 +280,7 @@ func ChangeEmployeeAuth(c *gin.Context) {
 	err = UpdateEmployeeState(newEmployeeState)
 	if err != nil {
 		logrus.Error("DB_ERROR: error happen when update employee state")
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"err":     "DB_ERROR",
 			"err_msg": "error happen when update employee state",
 		})
@@ -289,7 +289,7 @@ func ChangeEmployeeAuth(c *gin.Context) {
 
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
-		"err": "null",
+		"err": "",
 	})
 	return
 }

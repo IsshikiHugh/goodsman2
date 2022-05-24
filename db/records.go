@@ -91,7 +91,7 @@ func CreateNewRecordsD(record *model.Record) (recordID string, err error) {
 	ctx := context.TODO()
 	_, err = MongoDB.DRecordsColl.InsertOne(ctx, &record)
 	if err != nil {
-		logrus.Error("")
+		logrus.Error("err happen while creating new records_D")
 		return
 	}
 	return record.Id, nil

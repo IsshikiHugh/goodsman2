@@ -28,7 +28,7 @@ func CloseCertainRecordsH(c *gin.Context) {
 	employee, err := QueryEmployeeByID(req.Eid)
 	if err != nil {
 		logrus.Error("DB_ERROR: ", err)
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"err":     "DB_ERROR",
 			"err_msg": "error happen when query employee by eid",
 		})
@@ -47,7 +47,7 @@ func CloseCertainRecordsH(c *gin.Context) {
 	err = superCloseRecords(req.Rid)
 	if err != nil {
 		logrus.Error("DB_ERROR: ", err)
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"err":     "DB_ERROR",
 			"err_msg": err.Error(),
 		})
