@@ -12,11 +12,11 @@ import (
 
 func initMongo(cfg config.DBcfg) (*mongo.Database, error) {
 	url := cfg.Url
-	clientoptions := options.Client().ApplyURI(url)
-	clientoptions.SetConnectTimeout(2 * time.Second)
-	clientoptions.SetSocketTimeout(2 * time.Second)
-	clientoptions.SetServerSelectionTimeout(2 * time.Second)
-	db, err := mongo.Connect(context.TODO(), clientoptions)
+	clientOptions := options.Client().ApplyURI(url)
+	clientOptions.SetConnectTimeout(5 * time.Second)
+	clientOptions.SetSocketTimeout(5 * time.Second)
+	clientOptions.SetServerSelectionTimeout(5 * time.Second)
+	db, err := mongo.Connect(context.TODO(), clientOptions)
 
 	if err != nil {
 		return nil, err

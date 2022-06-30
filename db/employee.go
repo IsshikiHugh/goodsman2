@@ -38,7 +38,6 @@ func UpdateEmployeeState(employee *model.Employee) (err error) {
 		update = append(update, bson.E{"name", employee.Name})
 	}
 	update = bson.D{{"$set", update}}
-
 	result, err := MongoDB.EmpColl.UpdateOne(ctx, filter, update)
 	if err != nil {
 		logrus.Error(err.Error())
@@ -56,7 +55,7 @@ func UpdateEmployeeState(employee *model.Employee) (err error) {
 func QueryEmployeeByID(empID string) (employee *model.Employee, err error) {
 	ctx := context.TODO()
 	filter := bson.D{{"_id", empID}}
-	err = MongoDB.EmpColl.FindOne(ctx, filter).Decode(&employee)
+	err = MongoDB.EmpColl.FindOne(ctx, filter).Decode(employee)
 	if err != nil {
 		logrus.Error(err.Error())
 		return

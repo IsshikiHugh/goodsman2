@@ -35,7 +35,20 @@ func QueryGoodsByID(goodID string) (good *model.Goods, err error) {
 
 //query all goods
 func QueryAllGoods() (goods []*model.Goods, err error) {
-	return QueryAllGoodsByName()
+	ctx := context.TODO()
+	filter := bson.D{}
+
+	cursor, err := MongoDB.GoodsColl.Find(ctx, filter)
+	if err != nil {
+		logrus.Error(err.Error())
+		return
+	}
+	err = cursor.All(ctx, &goods)
+	if err != nil {
+		logrus.Error(err.Error())
+		return
+	}
+	return
 }
 
 //query goods by name.

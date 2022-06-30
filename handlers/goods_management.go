@@ -216,6 +216,34 @@ func ReturnGoods(c *gin.Context) {
 	return
 }
 
+func GetGoodsBriefInfoList(c *gin.Context) {
+	goodsList, err := QueryAllGoods()
+	if err != nil {
+		logrus.Error("DB_ERROR: error happen when query goods list")
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"err":     "DB_ERROR",
+			"err_msg": "error happen when query goods list",
+		})
+		return
+	}
+	resp := []model.BriefGoodsListResp{}
+	for _, info := range goodsList {
+		resp = append(resp, model.BriefGoodsListResp{
+			Id:   info.Id,
+			Name: info.Name,
+			Lore: info.Lore,
+			Num:  info.Num,
+		})
+	}
+	//respZip, _ := utils.GetZippedData(resp)
+	logrus.Info("OK")
+	c.JSON(http.StatusOK, gin.H{
+		"err":        "",
+		"goods_list": &resp,
+	})
+	return
+}
+
 // Be used to get goods brief info list with certain sub string in name.
 // Simply avoid pass "sub_str" to get the whole list.
 func GetCertainGoodsBriefInfoList(c *gin.Context) {

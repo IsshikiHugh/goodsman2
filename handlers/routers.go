@@ -15,11 +15,11 @@ var (
 
 // err type
 var (
-	NULL              string = ""
-	INVALID_PARAMS    string = "INVALID_PARAMS"
+	//NULL              string = ""
+	//INVALID_PARAMS    string = "INVALID_PARAMS"
 	DB_ERROR          string = "DB_ERROR"
 	CONDITION_NOT_MET string = "CONDITION_NOT_MET"
-	FEISHU_ERROR      string = "FEISHU_ERROR"
+	//FEISHU_ERROR      string = "FEISHU_ERROR"
 )
 
 func InitRouter() *gin.Engine {
@@ -42,6 +42,7 @@ func InitRouter() *gin.Engine {
 		apiGroup.POST("/users/return_goods", ReturnGoods)
 
 		apiGroup.GET("/goods/msg", GetGoodsInfo)
+		apiGroup.GET("/goods/all", GetGoodsBriefInfoList)
 		apiGroup.GET("/goods/search", GetCertainGoodsBriefInfoList)
 		apiGroup.POST("/goods/borrow", BorrowGoods)
 		apiGroup.POST("/goods/new", AddNewGoods)

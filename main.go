@@ -23,9 +23,12 @@ func main() {
 	s := &http.Server{
 		Addr:           fmt.Sprintf(":%d", config.Base.HttpPort),
 		Handler:        r,
-		ReadTimeout:    2 * time.Second,
-		WriteTimeout:   2 * time.Second,
+		ReadTimeout:    5 * time.Second,
+		WriteTimeout:   5 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
-	s.ListenAndServe()
+	err := s.ListenAndServe()
+	if err != nil {
+		logrus.Error("Server listening failed")
+	}
 }
