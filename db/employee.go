@@ -54,13 +54,14 @@ func UpdateEmployeeState(employee *model.Employee) (err error) {
 //Query an employee by id
 func QueryEmployeeByID(empID string) (employee *model.Employee, err error) {
 	ctx := context.TODO()
+	var emp model.Employee
 	filter := bson.D{{"_id", empID}}
-	err = MongoDB.EmpColl.FindOne(ctx, filter).Decode(employee)
+	err = MongoDB.EmpColl.FindOne(ctx, filter).Decode(&emp)
 	if err != nil {
 		logrus.Error(err.Error())
 		return
 	}
-	return
+	return &emp, nil
 }
 
 // pass nothing to get all
