@@ -5,6 +5,7 @@ package handlers
 import (
 	"errors"
 	"net/http"
+	"sort"
 
 	. "goodsman2/db"
 	"goodsman2/model"
@@ -244,6 +245,24 @@ func GetGoodsBriefInfoList(c *gin.Context) {
 	return
 }
 
+type BGLR []model.BriefGoodsListResp
+
+func (goods BGLR) Len() int {
+	return len(goods)
+}
+
+func (goods BGLR) Less(i, j int) bool {
+	if goods[i].Num != goods[j].Num {
+		return goods[i].Num < goods[j].Num
+	} else {
+		return goods[i].Name < goods[j].Name
+	}
+}
+
+func (goods BGLR) Swap(i, j int) {
+	goods[i], goods[j] = goods[j], goods[i]
+}
+
 // Be used to get goods brief info list with certain sub string in name.
 // Simply avoid pass "sub_str" to get the whole list.
 func GetCertainGoodsBriefInfoList(c *gin.Context) {
@@ -261,7 +280,8 @@ func GetCertainGoodsBriefInfoList(c *gin.Context) {
 		})
 		return
 	}
-	resp := []model.BriefGoodsListResp{}
+	// resp := []model.BriefGoodsListResp{}
+	var resp BGLR
 	for _, info := range goodsList {
 		resp = append(resp, model.BriefGoodsListResp{
 			Id:   info.Id,
@@ -270,6 +290,9 @@ func GetCertainGoodsBriefInfoList(c *gin.Context) {
 			Num:  info.Num,
 		})
 	}
+
+	sort.Sort(resp)
+
 	//respZip, _ := utils.GetZippedData(resp)
 	logrus.Info("OK")
 	c.JSON(http.StatusOK, gin.H{
