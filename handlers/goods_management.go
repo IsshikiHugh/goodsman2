@@ -253,7 +253,7 @@ func (goods BGLR) Len() int {
 
 func (goods BGLR) Less(i, j int) bool {
 	if goods[i].Num != goods[j].Num {
-		return goods[i].Num < goods[j].Num
+		return goods[i].Num > goods[j].Num
 	} else {
 		return goods[i].Name < goods[j].Name
 	}
